@@ -13,11 +13,11 @@ This example is taken from the test cases.
 
 ```Java
 CmdParser4J p = new CmdParser4J();
-p.accepts("-argument").asBoolean(1).setMandatory().describedAs("An argument that accepts a single boolean parameter");
-p.accepts("-multi").asString(1, 4).describedAs("An optional argument that accepts one to four argument.");
+p.accept("-argument").asBoolean(1).setMandatory().describedAs("An argument that accepts a single boolean parameter");
+p.accept("-multi").asString(1, 4).describedAs("An optional argument that accepts one to four argument.");
 
 // The name of the argument, or any prefix characters, doesn't really matter, here we use double dash.
-p.accepts("--otherArgument").withAlias("-o", "-O").asSingleBoolean().describedAs("An optional argument that takes no parameters");
+p.accept("--otherArgument").withAlias("-o", "-O").asSingleBoolean().describedAs("An optional argument that takes no parameters");
 
 // Arguments with variable parameters are only accepted as the last argument on the commandline.
 assertTrue(p.parse("-argument", "true", "-O", "-multi", "parameter1", "parameter2", "parameter3"));
@@ -51,8 +51,8 @@ If ```CmdParser4J.parse()``` returns false, you can easilly see what went wrong 
 
 ```Java
 CmdParser4J p = new CmdParser4J();
-p.accepts("-argument").asBoolean(1).setMandatory().describedAs("An argument that accepts a single boolean parameter");
-p.accepts("-multi").asString(1, 4).describedAs("An optional argument that accepts one to four argument.");
+p.accept("-argument").asBoolean(1).setMandatory().describedAs("An argument that accepts a single boolean parameter");
+p.accept("-multi").asString(1, 4).describedAs("An optional argument that accepts one to four argument.");
 
 // Missing mandatory argument
 assertFalse(p.parse("-multi", "parameter1", "parameter2", "parameter3"));
