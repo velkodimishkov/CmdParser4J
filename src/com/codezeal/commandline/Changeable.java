@@ -16,7 +16,7 @@ public class Changeable<T> {
 
 	public boolean equals(Object other) {
 		if (other instanceof Changeable) {
-			return value.equals(((Changeable) other).value);
+			return value.equals(((Changeable<?>) other).value);
 		} else {
 			return value.equals(other);
 		}
