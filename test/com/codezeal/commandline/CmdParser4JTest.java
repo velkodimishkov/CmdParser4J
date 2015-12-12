@@ -173,6 +173,50 @@ public class CmdParser4JTest {
 	}
 
 	@Test
+	public void testDependsOnMissing() throws Exception {
+		CmdParser4J p = new CmdParser4J();
+		p.accept("first").dependsOn("second").asBoolean(1);
+		p.accept("second").asBoolean(1);
+		assertFalse(p.parse("first", "false"));
+		assertTrue(p.getParseResult().contains("Argument 'first' depends on 'second', but the latter is missing"));
+	}
+
+	@Test
+	public void testDependsOnOk() throws Exception {
+		CmdParser4J p = new CmdParser4J();
+		p.accept("first").dependsOn("second").asBoolean(1);
+		p.accept("second").asBoolean(1);
+		assertTrue(p.parse("first", "false", "second", "true"));
+		assertEquals("", p.getParseResult());
+	}
+
+	@Test
+	public void testDependsTwoWay() throws Exception {
+		CmdParser4J p = new CmdParser4J();
+		p.accept("first").dependsOn("second").asBoolean(1);
+		p.accept("second").dependsOn("first").asBoolean(1);
+		assertTrue(p.parse("first", "false", "second", "true"));
+		assertEquals("", p.getParseResult());
+	}
+
+	@Test
+	public void testDependsTwoWayFail() throws Exception {
+		CmdParser4J p = new CmdParser4J();
+		p.accept("first").dependsOn("second").asBoolean(1);
+		p.accept("second").dependsOn("first").asBoolean(1);
+		assertFalse(p.parse( "second", "true"));
+		assertTrue(p.getParseResult().contains("Argument 'second' depends on 'first', but the latter is missing"));
+	}
+
+	@Test
+	public void testDependsOnProgrammingError() throws Exception {
+		CmdParser4J p = new CmdParser4J();
+		p.accept("first").dependsOn("second").asBoolean(1);
+		assertFalse(p.parse("first", "false"));
+		assertTrue(p.getParseResult().contains("Argument 'first' depends on 'second', but no such argument is defined - contact the author of the application"));
+	}
+
+	@Test
 	public void testGitExample() throws Exception {
 		CmdParser4J p = new CmdParser4J();
 		p.accept("-argument").asBoolean(1).setMandatory().describedAs("An argument that accept a single boolean parameter");

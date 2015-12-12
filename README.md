@@ -1,11 +1,12 @@
 # CmdParser4J - Command Line Parser for Java
 
-This is a rewrite of my original [JavaCommandLineParser](https://github.com/PerMalmberg/JavaCommandLineParser). Although working, it did have its limitation regarding arguments with multiple parameters. Hence I redesigned it and made it all alot simpler.
+This is a rewrite of my original [JavaCommandLineParser](https://github.com/PerMalmberg/JavaCommandLineParser) with support for multiple parameters to an argument.
 
 ## Features
 * Written with support for Java6 in mind so 7 and 8 shouldn't be a problem.
 * Arguments that takes none, single, multiple and unlimited number of parameters.
 * Mandatory and optional arguments.
+* Dependencies between arguments, i.e. if entered, an argument may require another argument to be entered too.
 * Constraint validation; same argument not allowed twice, only allow a single argument with variable number of parameters and placement of such an argument at the end of the command line.
 
 ## Usage
@@ -47,7 +48,7 @@ Usage: myApp -argument <arg1> [-multi <arg1>  <arg2>  <arg3>  <arg4>] [--otherAr
              --otherArgument	[-o] An optional argument that takes no parameters
 ```
 
-If ```CmdParser4J.parse()``` returns false, you can easilly see what went wrong by calling the method ```getParseResult()```, like so:
+If ```CmdParser4J.parse()``` returns false, you can easily see what went wrong by calling the method ```getParseResult()```, like so:
 
 ```Java
 CmdParser4J p = new CmdParser4J();

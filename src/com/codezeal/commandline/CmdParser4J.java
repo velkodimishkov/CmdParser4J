@@ -4,7 +4,7 @@ import java.util.*;
 
 /**
  * A command line parser for Java.
- * Commands arguments can be specified in any order, except those that make any number
+ * Commands arguments can be specified in any order, except those that make a variable number
  * of arguments which as to be placed at the end of the argument list.
  * <p/>
  * Created by Per Malmberg on 2015-12-05.
@@ -56,6 +56,16 @@ public class CmdParser4J {
 			}
 
 			result &= checkMandatory();
+			result &= checkDependencies();
+		}
+
+		return result;
+	}
+
+	private boolean checkDependencies() {
+		boolean result = true;
+		for( Argument a : myArguments.values() ) {
+			result &= a.checkDependencies( myArguments, this );
 		}
 
 		return result;

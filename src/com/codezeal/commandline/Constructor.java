@@ -97,4 +97,14 @@ public class Constructor {
 		myArg.setType(new StringType(myParser, myArg, minParameterCount, maxParameterCount));
 		return this;
 	}
+
+	/**
+	 * Specifies a dependency on another argument
+	 * @param dependencyPrimaryName The primary name of another argument.
+	 * @return The argument constructor
+	 */
+	public Constructor dependsOn(String dependencyPrimaryName) {
+		myArg.addDependency( dependencyPrimaryName );
+		return this;
+	}
 }
