@@ -8,7 +8,6 @@ import java.util.ArrayList;
 abstract class BaseType<T> {
 	private final int myMinParameterCount;
 	private final int myMaxParameterCount;
-	private int myAvailableParameterCount = 0;
 	private final CmdParser4J myParser;
 	protected final Argument myArgument;
 	protected final ArrayList<T> myResults = new ArrayList<T>();
@@ -27,20 +26,22 @@ abstract class BaseType<T> {
 	final boolean parse(ArrayList<String> args, int argumentIx) {
 		// Save and remove the argument name
 		String argumentName = args.remove(argumentIx);
+
+		// Enough parameters left=
 		boolean res = hasEnoughParametersLeft(args, argumentIx);
 
 		if (res) {
 			// We only do this loop if the current type takes at least one parameter
 			for (int currentParameter = 0;
-			     res && currentParameter < myMaxParameterCount
-					     && args.size() > 0
-					     && argumentIx < args.size(); ++currentParameter) {
+			     res && currentParameter < myMaxParameterCount // Don't take to many parameters
+					     && args.size() > 0 // Still some left in data
+					     && argumentIx < args.size() // Not yet reached end of data
+					;
+                 ++currentParameter
+					) {
 				// Get the next parameter from the 'front', i.e. where our parameters start.
 				String parameter = args.remove(argumentIx);
 				res = doTypeParse(parameter);
-				if (res) {
-					++myAvailableParameterCount;
-				}
 			}
 		} else {
 			myParser.appendParseMessage(String.format("There are not enough parameters for the argument %s, %d wanted", argumentName, myMinParameterCount));
@@ -78,7 +79,20 @@ abstract class BaseType<T> {
 	 * Determines if there are enough parameters to parse
 	 */
 	private boolean hasEnoughParametersLeft(ArrayList<String> args, int argumentIx) {
-		return args.size() - argumentIx - myMinParameterCount >= 0;
+		// Calculate remaining arguments until the prefix is found.
+		int remaining = 0;
+
+		boolean done = false;
+		for (int i = argumentIx; !done && i < args.size(); ++i) {
+			if (args.get(i).startsWith(myParser.getArgumentPrefix())) {
+				done = true;
+			} else {
+				++remaining;
+			}
+
+		}
+
+		return remaining >= myMinParameterCount;
 	}
 
 	/**
@@ -105,7 +119,7 @@ abstract class BaseType<T> {
 		return myMaxParameterCount;
 	}
 
-	int getParameterCount() {
+	int getMinimumParameterCount() {
 		return myMinParameterCount;
 	}
 }

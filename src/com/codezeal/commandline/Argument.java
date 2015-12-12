@@ -13,10 +13,12 @@ class Argument {
 	private boolean myIsMandatory = false;
 	private BaseType myType = null;
 	private String myDescription = "";
+	private final CmdParser4J myParser;
 
 
-	public Argument(String argumentName) {
+	public Argument(String argumentName, CmdParser4J parser) {
 		myNames.add(argumentName);
+		myParser = parser;
 	}
 
 	public boolean parse(ArrayList<String> args) {
@@ -124,14 +126,14 @@ class Argument {
 	}
 
 	boolean hasVariableParameterCount() {
-		return myType.getMaxParameterCount() != myType.getParameterCount();
+		return myType.getMaxParameterCount() != myType.getMinimumParameterCount();
 	}
 
 	void addDependency(String dependencyArgument) {
 		myDependencies.add(dependencyArgument);
 	}
 
-	boolean checkDependencies(HashMap<String, Argument> arguments, CmdParser4J parser) {
+	boolean checkDependencies(HashMap<String, Argument> arguments) {
 		boolean result = true;
 
 		// Only check if the current Argument has been parsed itself.
@@ -140,10 +142,10 @@ class Argument {
 				Argument dependsOn = arguments.get(dep);
 				if (dependsOn == null) {
 					// Can't find the argument, this is a programming error
-					parser.appendParseMessage(String.format("Argument '%s' depends on '%s', but no such argument is defined - contact the author of the application", getPrimaryName(), dep));
+					myParser.appendParseMessage(String.format("Argument '%s' depends on '%s', but no such argument is defined - contact the author of the application", getPrimaryName(), dep));
 					result = false;
 				} else if (!dependsOn.isSuccessFullyParsed()) {
-					parser.appendParseMessage(String.format("Argument '%s' depends on '%s', but the latter is missing", getPrimaryName(), dep));
+					myParser.appendParseMessage(String.format("Argument '%s' depends on '%s', but the latter is missing", getPrimaryName(), dep));
 					result = false;
 				}
 			}

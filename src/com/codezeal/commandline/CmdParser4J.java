@@ -14,6 +14,20 @@ public class CmdParser4J {
 	private final StringBuilder myParseMessage = new StringBuilder();
 	private final Hashtable<String, StringType> myStringResult = new Hashtable<String, StringType>();
 	private final Hashtable<String, BooleanType> myBoolResult = new Hashtable<String, BooleanType>();
+	private final String myArgumentPrefix;
+
+	/**
+	 * Constructs a command line parser
+	 *
+	 * @param argumentPrefix The prefix which commands are expected to be prefixed with, such as '-', '--' or '/'
+	 *                       This is used when determining where the next argument starts. Must be specified.
+	 *                       Even though this argument must be specified, it is fully legal to use arguments without
+	 *                       the leading prefix, but be aware that such arguments cannot be distinguished
+	 *                       from argument parameters as they lack the suffix.
+	 */
+	public CmdParser4J(String argumentPrefix) {
+		myArgumentPrefix = argumentPrefix;
+	}
 
 	/**
 	 * Parses the command line
@@ -64,8 +78,8 @@ public class CmdParser4J {
 
 	private boolean checkDependencies() {
 		boolean result = true;
-		for( Argument a : myArguments.values() ) {
-			result &= a.checkDependencies( myArguments, this );
+		for (Argument a : myArguments.values()) {
+			result &= a.checkDependencies(myArguments);
 		}
 
 		return result;
@@ -153,8 +167,8 @@ public class CmdParser4J {
 	 * @return A {@code Constructor} object
 	 */
 	public Constructor accept(String argumentName) {
-		Argument a = new Argument(argumentName);
-		myArguments.put(argumentName, a);
+		Argument a = new Argument(argumentName, this);
+		myArguments.put(a.getPrimaryName(), a);
 		return new Constructor(a, this);
 	}
 
@@ -335,5 +349,9 @@ public class CmdParser4J {
 	 */
 	public int getAvailableStringParameterCount(String argumentName) {
 		return getAvailableParameterCount(argumentName, myStringResult);
+	}
+
+	public String getArgumentPrefix() {
+		return myArgumentPrefix;
 	}
 }

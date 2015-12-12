@@ -13,7 +13,7 @@ This is a rewrite of my original [JavaCommandLineParser](https://github.com/PerM
 This example is taken from the test cases.
 
 ```Java
-CmdParser4J p = new CmdParser4J();
+CmdParser4J p = new CmdParser4J("-");
 p.accept("-argument").asBoolean(1).setMandatory().describedAs("An argument that accepts a single boolean parameter");
 p.accept("-multi").asString(1, 4).describedAs("An optional argument that accepts one to four argument.");
 
@@ -51,7 +51,7 @@ Usage: myApp -argument <arg1> [-multi <arg1>  <arg2>  <arg3>  <arg4>] [--otherAr
 If ```CmdParser4J.parse()``` returns false, you can easily see what went wrong by calling the method ```getParseResult()```, like so:
 
 ```Java
-CmdParser4J p = new CmdParser4J();
+CmdParser4J p = new CmdParser4J("-");
 p.accept("-argument").asBoolean(1).setMandatory().describedAs("An argument that accepts a single boolean parameter");
 p.accept("-multi").asString(1, 4).describedAs("An optional argument that accepts one to four argument.");
 

@@ -100,11 +100,12 @@ public class Constructor {
 
 	/**
 	 * Specifies a dependency on another argument
+	 *
 	 * @param dependencyPrimaryName The primary name of another argument.
 	 * @return The argument constructor
 	 */
 	public Constructor dependsOn(String dependencyPrimaryName) {
-		myArg.addDependency( dependencyPrimaryName );
+		myArg.addDependency(dependencyPrimaryName);
 		return this;
 	}
 }
