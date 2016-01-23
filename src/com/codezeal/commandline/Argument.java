@@ -3,6 +3,7 @@ package com.codezeal.commandline;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Per Malmberg on 2015-12-05.
@@ -10,7 +11,9 @@ import java.util.HashMap;
 class Argument {
 	private final ArrayList<String> myNames = new ArrayList<String>();
 	private final ArrayList<String> myDependencies = new ArrayList<String>();
+	private final ArrayList<String> myBlocks = new ArrayList<String>();
 	private boolean myIsMandatory = false;
+	private boolean myExistsOnCommandLine = false;
 	private BaseType myType = null;
 	private String myDescription = "";
 	private final CmdParser4J myParser;
@@ -31,6 +34,7 @@ class Argument {
 
 		if (argumentIx >= 0) {
 			// Argument found, parse it
+			myExistsOnCommandLine = true;
 			result = myType.parse(args, argumentIx);
 		}
 
@@ -75,6 +79,7 @@ class Argument {
 		myIsMandatory = true;
 	}
 
+
 	String getPrimaryName() {
 		return myNames.get(0);
 	}
@@ -101,7 +106,8 @@ class Argument {
 	}
 
 	boolean isSuccessFullyParsed() {
-		return myType.isSuccessFullyParsed();
+		// It can only be successfully parsed if it actually exists on the command line.
+		return myExistsOnCommandLine && myType.isSuccessFullyParsed();
 	}
 
 	String getDescription() {
@@ -133,6 +139,10 @@ class Argument {
 		myDependencies.add(dependencyArgument);
 	}
 
+	void addBlockedBy(String blockedByPrimaryName) {
+		myBlocks.add(blockedByPrimaryName);
+	}
+
 	boolean checkDependencies(HashMap<String, Argument> arguments) {
 		boolean result = true;
 
@@ -147,6 +157,29 @@ class Argument {
 				} else if (!dependsOn.isSuccessFullyParsed()) {
 					myParser.appendParseMessage(String.format("Argument '%s' depends on '%s', but the latter is missing", getPrimaryName(), dep));
 					result = false;
+				}
+			}
+		}
+
+		return result;
+	}
+
+	boolean checkMutualExclusion(HashMap<String, Argument> argumentsToTestAgainst, List<String> alreadyTested) {
+		boolean result = true;
+
+		// Only check if the current Argument has been parsed itself.
+		if (isSuccessFullyParsed()) {
+			for (String blocker : myBlocks) {
+				if( !alreadyTested.contains(blocker)) {
+					Argument blockedBy = argumentsToTestAgainst.get(blocker);
+					if (blockedBy == null) {
+						// Can't find the argument, this is a programming error
+						myParser.appendParseMessage(String.format("Argument '%s' is mutually exclusive to '%s', but no such argument is defined - contact the author of the application", getPrimaryName(), blocker));
+						result = false;
+					} else if (blockedBy.isSuccessFullyParsed()) {
+						myParser.appendParseMessage(String.format("Arguments '%s' and '%s' are mutually exclusive.", getPrimaryName(), blockedBy.getPrimaryName()));
+						result = false;
+					}
 				}
 			}
 		}

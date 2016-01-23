@@ -23,7 +23,7 @@ public class CmdParser4J {
 	 *                       This is used when determining where the next argument starts. Must be specified.
 	 *                       Even though this argument must be specified, it is fully legal to use arguments without
 	 *                       the leading prefix, but be aware that such arguments cannot be distinguished
-	 *                       from argument parameters as they lack the suffix.
+	 *                       from argument parameters as they lack the prefix.
 	 */
 	public CmdParser4J(String argumentPrefix) {
 		myArgumentPrefix = argumentPrefix;
@@ -71,15 +71,39 @@ public class CmdParser4J {
 
 			result &= checkMandatory();
 			result &= checkDependencies();
+			result &= checkMutualExclusion();
 		}
 
 		return result;
 	}
 
+
 	private boolean checkDependencies() {
 		boolean result = true;
 		for (Argument a : myArguments.values()) {
 			result &= a.checkDependencies(myArguments);
+		}
+
+		return result;
+	}
+
+	private boolean checkMutualExclusion() {
+		boolean result = true;
+		// We don't want to check blockers 'a' -> 'b', then 'b' -> 'a' as that will give the same error message twice
+
+		HashMap<String, Argument> testAgainst = new HashMap<String, Argument>();
+		List<String> alreadyTested = new ArrayList<String>();
+		testAgainst.putAll(myArguments);
+
+		for( String key : myArguments.keySet()) {
+			Argument arg = myArguments.get(key);
+			boolean blocksFound = !arg.checkMutualExclusion(testAgainst, alreadyTested);
+			if (blocksFound) {
+				// Remove argument to prevent double checks
+				alreadyTested.add(key);
+				testAgainst.remove(key);
+			}
+			result &= !blocksFound;
 		}
 
 		return result;

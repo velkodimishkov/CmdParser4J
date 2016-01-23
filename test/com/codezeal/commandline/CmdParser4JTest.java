@@ -223,7 +223,7 @@ public class CmdParser4JTest {
 		CmdParser4J p = new CmdParser4J("-");
 		p.accept("-first").dependsOn("-second").asBoolean(1);
 		p.accept("-second").dependsOn("-first").asBoolean(1);
-		assertFalse(p.parse( "-second", "true"));
+		assertFalse(p.parse("-second", "true"));
 		assertTrue(p.getParseResult().contains("Argument '-second' depends on '-first', but the latter is missing"));
 	}
 
@@ -233,6 +233,24 @@ public class CmdParser4JTest {
 		p.accept("-first").dependsOn("-second").asBoolean(1);
 		assertFalse(p.parse("-first", "false"));
 		assertTrue(p.getParseResult().contains("Argument '-first' depends on '-second', but no such argument is defined - contact the author of the application"));
+	}
+
+	@Test
+	public void testBlockedByOK() throws Exception {
+		CmdParser4J p = new CmdParser4J("-");
+		p.accept("-first").blockedBy("-second").asSingleBoolean();
+		p.accept("-second").blockedBy("-first").asSingleBoolean();
+		assertTrue(p.parse("-first"));
+	}
+
+	@Test
+	public void testBlockedByFAIL() throws Exception {
+		CmdParser4J p = new CmdParser4J("-");
+		p.accept("-first").blockedBy("-second").asSingleBoolean();
+		p.accept("-second").blockedBy("-first").asSingleBoolean();
+		assertFalse(p.parse("-first", "-second"));
+		assertTrue(p.getParseResult().contains("mutually exclusive"));
+		System.out.println(p.getParseResult());
 	}
 
 	@Test

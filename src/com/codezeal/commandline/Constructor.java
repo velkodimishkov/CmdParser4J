@@ -108,4 +108,14 @@ public class Constructor {
 		myArg.addDependency(dependencyPrimaryName);
 		return this;
 	}
+
+	/**
+	 * Specifies that this argument is blocked by another one, i.e.they are mutually exclusive.
+	 * @param blockedByPrimaryName The primary name of the parameter that blocks this parameter.
+	 * @return The argument constructor
+	 */
+	public Constructor blockedBy( String blockedByPrimaryName ) {
+		myArg.addBlockedBy( blockedByPrimaryName );
+		return this;
+	}
 }
