@@ -1,7 +1,5 @@
 # CmdParser4J - Command Line Parser for Java
 
-This is a rewrite of my original [JavaCommandLineParser](https://github.com/PerMalmberg/JavaCommandLineParser) with support for multiple parameters to an argument.
-
 ## Features
 * Written with support for Java6 in mind so 7 and 8 shouldn't be a problem.
 * Arguments that takes none, single, multiple and unlimited number of parameters.
