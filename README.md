@@ -5,7 +5,7 @@
 * Arguments that takes none, single, multiple and unlimited number of parameters.
 * Mandatory and optional arguments.
 * Dependencies between arguments, i.e. if entered, an argument may require another argument to be entered too.
-* Mutually exclusive aguments.
+* Mutually exclusive arguments.
 * Constraint validation
   * Same argument not allowed twice
   * Only allow a single argument with variable number of parameters and placement of such an argument at the end of the command line.
