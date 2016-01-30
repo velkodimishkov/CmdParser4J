@@ -16,12 +16,12 @@ class Argument {
 	private boolean myExistsOnCommandLine = false;
 	private BaseType myType = null;
 	private String myDescription = "";
-	private final CmdParser4J myParser;
+	private IParseResult myResult;
 
 
-	public Argument(String argumentName, CmdParser4J parser) {
+	public Argument(String argumentName, IParseResult result) {
 		myNames.add(argumentName);
-		myParser = parser;
+		myResult = result;
 	}
 
 	public boolean parse(ArrayList<String> args) {
@@ -152,10 +152,10 @@ class Argument {
 				Argument dependsOn = arguments.get(dep);
 				if (dependsOn == null) {
 					// Can't find the argument, this is a programming error
-					myParser.appendParseMessage(String.format("Argument '%s' depends on '%s', but no such argument is defined - contact the author of the application", getPrimaryName(), dep));
+					myResult.noSuchArgumentDefined(getPrimaryName(), dep);
 					result = false;
 				} else if (!dependsOn.isSuccessFullyParsed()) {
-					myParser.appendParseMessage(String.format("Argument '%s' depends on '%s', but the latter is missing", getPrimaryName(), dep));
+					myResult.missingDependentArgument(getPrimaryName(), dep);
 					result = false;
 				}
 			}
@@ -170,14 +170,14 @@ class Argument {
 		// Only check if the current Argument has been parsed itself.
 		if (isSuccessFullyParsed()) {
 			for (String blocker : myBlocks) {
-				if( !alreadyTested.contains(blocker)) {
+				if (!alreadyTested.contains(blocker)) {
 					Argument blockedBy = argumentsToTestAgainst.get(blocker);
 					if (blockedBy == null) {
 						// Can't find the argument, this is a programming error
-						myParser.appendParseMessage(String.format("Argument '%s' is mutually exclusive to '%s', but no such argument is defined - contact the author of the application", getPrimaryName(), blocker));
+						myResult.noSuchMutuallyExclusiveArgumentDefined( getPrimaryName(), blocker);
 						result = false;
 					} else if (blockedBy.isSuccessFullyParsed()) {
-						myParser.appendParseMessage(String.format("Arguments '%s' and '%s' are mutually exclusive.", getPrimaryName(), blockedBy.getPrimaryName()));
+						myResult.argumentsAreMutuallyExclusive( getPrimaryName(), blockedBy.getPrimaryName());
 						result = false;
 					}
 				}

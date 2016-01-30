@@ -11,10 +11,10 @@ import java.util.*;
  */
 public class CmdParser4J {
 	private final HashMap<String, Argument> myArguments = new HashMap<String, Argument>();
-	private final StringBuilder myParseMessage = new StringBuilder();
 	private final Hashtable<String, StringType> myStringResult = new Hashtable<String, StringType>();
 	private final Hashtable<String, BooleanType> myBoolResult = new Hashtable<String, BooleanType>();
 	private final String myArgumentPrefix;
+	private final IParseResult myResult;
 
 	/**
 	 * Constructs a command line parser
@@ -25,8 +25,9 @@ public class CmdParser4J {
 	 *                       the leading prefix, but be aware that such arguments cannot be distinguished
 	 *                       from argument parameters as they lack the prefix.
 	 */
-	public CmdParser4J(String argumentPrefix) {
+	public CmdParser4J(String argumentPrefix, IParseResult message) {
 		myArgumentPrefix = argumentPrefix;
+		myResult = message;
 	}
 
 	/**
@@ -65,7 +66,7 @@ public class CmdParser4J {
 
 			if (result && args.size() > 0) {
 				// Leftovers on commandline.
-				appendParseMessage("Unknown arguments on the command line: " + args.toString());
+				myResult.unknownArguments(args.toString());
 				result = false;
 			}
 
@@ -123,7 +124,7 @@ public class CmdParser4J {
 				if (hitCount.get() > 1) {
 					// Same argument multiple times - that's bad
 					res = false;
-					appendParseMessage(String.format("The argument '%s' is specified multiple times.", a.getPrimaryName()));
+					myResult.messageSpecifiedMultipleTimes( a.getPrimaryName());
 				} else if (a.hasVariableParameterCount()) {
 					variable.add(ix);
 				} else {
@@ -134,7 +135,7 @@ public class CmdParser4J {
 
 		if (res && variable.size() > 1) {
 			res = false;
-			appendParseMessage("Multiple arguments which allows for variable parameter count are specified on the command line.");
+			myResult.multipleMultiArgumentsSpecified();
 		}
 
 		if (res && variable.size() == 1) {
@@ -146,7 +147,7 @@ public class CmdParser4J {
 
 			if (variable.get(0) < max) {
 				res = false;
-				appendParseMessage("An argument that allows variable number of parameters must be places last on the command line.");
+				myResult.multiArgumentMustBePlacedLast();
 			}
 		}
 
@@ -162,7 +163,7 @@ public class CmdParser4J {
 		boolean result = true;
 		for (Argument a : myArguments.values()) {
 			if (a.isMandatory() && !a.isSuccessFullyParsed()) {
-				appendParseMessage(String.format("The mandatory argument '%s' is missing", a.getPrimaryName()));
+				myResult.missingMandatoryArgument(a.getPrimaryName());
 				result = false;
 			}
 		}
@@ -191,13 +192,9 @@ public class CmdParser4J {
 	 * @return A {@code Constructor} object
 	 */
 	public Constructor accept(String argumentName) {
-		Argument a = new Argument(argumentName, this);
+		Argument a = new Argument(argumentName, myResult);
 		myArguments.put(a.getPrimaryName(), a);
 		return new Constructor(a, this);
-	}
-
-	void appendParseMessage(String message) {
-		myParseMessage.append(String.format("%s%n", message)); // %n => newline
 	}
 
 	void setResult(String primaryName, StringType type) {
@@ -208,16 +205,7 @@ public class CmdParser4J {
 		myBoolResult.put(primaryName, type);
 	}
 
-	/**
-	 * Gets the parse result. Use this to get a string describing any parse errors or rule violations.
-	 *
-	 * @return A string with information on parse failures.
-	 */
-	public String getParseResult() {
-		return myParseMessage.toString();
-	}
-
-	/**
+		/**
 	 * Gets the first parameter for the given {@code argumentName}
 	 *
 	 * @param argumentName The argument name
@@ -377,5 +365,9 @@ public class CmdParser4J {
 
 	public String getArgumentPrefix() {
 		return myArgumentPrefix;
+	}
+
+	public IParseResult getMessageParser() {
+		return myResult;
 	}
 }

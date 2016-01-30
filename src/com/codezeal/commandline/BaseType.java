@@ -8,12 +8,14 @@ import java.util.ArrayList;
 abstract class BaseType<T> {
 	private final int myMinParameterCount;
 	private final int myMaxParameterCount;
-	private final CmdParser4J myParser;
+	private final IParseResult myResult;
 	protected final Argument myArgument;
+	protected final CmdParser4J myParser;
 	protected final ArrayList<T> myResults = new ArrayList<T>();
 
 	public BaseType(CmdParser4J parser, Argument argument, int minParameterCount, int maxParameterCount) {
 		myParser = parser;
+		myResult = parser.getMessageParser();
 		myArgument = argument;
 		myMinParameterCount = minParameterCount;
 		myMaxParameterCount = maxParameterCount;
@@ -44,7 +46,7 @@ abstract class BaseType<T> {
 				res = doTypeParse(parameter);
 			}
 		} else {
-			myParser.appendParseMessage(String.format("There are not enough parameters for the argument %s, %d wanted", argumentName, myMinParameterCount));
+			myResult.notEnoughParameters( argumentName, myMinParameterCount);
 		}
 
 		res = isSuccessFullyParsed();
@@ -52,7 +54,7 @@ abstract class BaseType<T> {
 		if (res) {
 			retrieveResult(myParser);
 		} else {
-			myParser.appendParseMessage(String.format("Parsing of argument '%s' failed", argumentName));
+			myResult.failedToParseArgument(argumentName);
 		}
 
 		return res;
