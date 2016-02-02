@@ -14,16 +14,14 @@
 This example is taken from the test cases.
 
 ```Java
-CmdParser4J p = new CmdParser4J("-");
-p.accept("-argument").asBoolean(1).setMandatory().describedAs("An argument that accepts a single boolean parameter");
-p.accept("-multi").asString(1, 4).describedAs("An optional argument that accepts one to four argument.");
-
+IParseResult msg = new SystemOutputParseResult();
+CmdParser4J p = new CmdParser4J("-", msg);
+p.accept("-argument").asBoolean(1).setMandatory().describedAs("An argument that accept a single boolean parameter");
+p.accept("-multi").asString(1, 4).describedAs("An optional argument that accept one to four argument.");
 // The name of the argument, or any prefix characters, doesn't really matter, here we use double dash.
 p.accept("--otherArgument").withAlias("-o", "-O").asSingleBoolean().describedAs("An optional argument that takes no parameters");
-
 // Arguments with variable parameters are only accepted as the last argument on the commandline.
 assertTrue(p.parse("-argument", "true", "-O", "-multi", "parameter1", "parameter2", "parameter3"));
-
 // Verify the number of parameters that can be read for the different arguments.
 assertEquals(1, p.getAvailableBooleanParameterCount("--otherArgument"));
 assertEquals(3, p.getAvailableStringParameterCount("-multi"));
@@ -39,27 +37,33 @@ assertEquals(null, p.getString("-multi", 4));
 
 The parser also supports printing usage text;
 ```Java
-p.getUsage("myApp")
+IUsageFormatter usage = new SystemOutputUsageFormatter("MyCmdString");
+p.getUsage(usage);
+System.out.println(usage);
 ```
 which return the following string, based on the above example.
 ```
-Usage: myApp -argument <arg1> [-multi <arg1>  <arg2>  <arg3>  <arg4>] [--otherArgument] 
-             -argument	 An argument that accepts a single boolean parameter
-             -multi	 An optional argument that accepts one to four argument.
-             --otherArgument	[-o] An optional argument that takes no parameters
+MyCmdString
+           -argument
+                      An argument that accept a single boolean parameter
+           -multi <arg1> [... <arg4>]
+                      An optional argument that accept one to four argument.
+           --otherArgument (-o)
+                      An optional argument that takes no parameters
 ```
 
 If ```CmdParser4J.parse()``` returns false, you can easily see what went wrong by calling the method ```getParseResult()```, like so:
 
 ```Java
-CmdParser4J p = new CmdParser4J("-");
-p.accept("-argument").asBoolean(1).setMandatory().describedAs("An argument that accepts a single boolean parameter");
-p.accept("-multi").asString(1, 4).describedAs("An optional argument that accepts one to four argument.");
+IParseResult msg = new SystemOutputParseResult();
+CmdParser4J p = new CmdParser4J("-", msg);
+p.accept("-argument").asBoolean(1).setMandatory().describedAs("An argument that accept a single boolean parameter");
+p.accept("-multi").asString(1, 4).describedAs("An optional argument that accept one to four argument.");
 
 // Missing mandatory argument
 assertFalse(p.parse("-multi", "parameter1", "parameter2", "parameter3"));
 
-System.out.println(p.getParseResult());
+System.out.println(msg.getParseResult());
 ```
 which yields the following message
 ```

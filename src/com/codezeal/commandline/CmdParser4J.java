@@ -96,7 +96,7 @@ public class CmdParser4J {
 		List<String> alreadyTested = new ArrayList<String>();
 		testAgainst.putAll(myArguments);
 
-		for( String key : myArguments.keySet()) {
+		for (String key : myArguments.keySet()) {
 			Argument arg = myArguments.get(key);
 			boolean blocksFound = !arg.checkMutualExclusion(testAgainst, alreadyTested);
 			if (blocksFound) {
@@ -124,7 +124,7 @@ public class CmdParser4J {
 				if (hitCount.get() > 1) {
 					// Same argument multiple times - that's bad
 					res = false;
-					myResult.messageSpecifiedMultipleTimes( a.getPrimaryName());
+					myResult.messageSpecifiedMultipleTimes(a.getPrimaryName());
 				} else if (a.hasVariableParameterCount()) {
 					variable.add(ix);
 				} else {
@@ -205,7 +205,7 @@ public class CmdParser4J {
 		myBoolResult.put(primaryName, type);
 	}
 
-		/**
+	/**
 	 * Gets the first parameter for the given {@code argumentName}
 	 *
 	 * @param argumentName The argument name
@@ -284,15 +284,8 @@ public class CmdParser4J {
 	/**
 	 * Gets a string describing the usage, suitable for printing to the console.
 	 *
-	 * @param applicationName The application name (i.e. the executable name)
-	 * @return The usage string
 	 */
-	public String getUsage(String applicationName) {
-		StringBuilder sb = new StringBuilder();
-		String header = "Usage: " + applicationName;
-		final String indent = repeat(' ', header.length());
-		sb.append(header);
-
+	public void getUsage(IUsageFormatter usage) {
 		ArrayList<Argument> mandatory = new ArrayList<Argument>();
 		ArrayList<Argument> nonMandatory = new ArrayList<Argument>();
 
@@ -307,25 +300,13 @@ public class CmdParser4J {
 
 		// Print mandatory
 		for (Argument a : mandatory) {
-			sb.append(" ");
-			sb.append(a.getUsage());
-			sb.append(" ");
+			usage.prepareMandatory(a.getPrimaryName(), a.hasVariableParameterCount(), a.getMaxArgumentCount(), a.getAliases(), a.getDescription());
 		}
 
 		// Print non mandatory
 		for (Argument a : nonMandatory) {
-			sb.append("[").append(a.getUsage()).append("]");
-			sb.append(" ");
+			usage.prepareNonMandatory(a.getPrimaryName(), a.hasVariableParameterCount(), a.getMaxArgumentCount(), a.getAliases(), a.getDescription());
 		}
-
-		sb.append(String.format("%n"));
-		// Print descriptions
-		for (Argument a : myArguments.values()) {
-
-			sb.append(String.format(" %s%s\t%s %s%n", indent, a.getPrimaryName(), a.getAliases(), a.getDescription()));
-		}
-
-		return sb.toString();
 	}
 
 
@@ -339,9 +320,7 @@ public class CmdParser4J {
 		return result;
 	}
 
-	private String repeat(char c, int n) {
-		return new String(new char[n]).replace('\0', c);
-	}
+
 
 	/**
 	 * Gets the available parameter count for the give argument name of type boolean

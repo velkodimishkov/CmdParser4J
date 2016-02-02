@@ -123,7 +123,7 @@ public class CmdParser4JTest {
 		p.accept("single").asSingleBoolean().describedAs("AAA BBBBB CCCCCCCCCCC DDDDDDDDDDDDDDE EEEEEEEEEEEEEEEE FFFFFFFFFFF GGGGGGGGGGGGGGG HHHHHHHHHHHH");
 		p.accept("/bool").asBoolean(1).withAlias("/B", "-B", "-b").describedAs("A Boolean value").setMandatory();
 		p.accept("/string").asString(1).describedAs("A string argument");
-		p.accept("/goo").asBoolean(1).setMandatory().describedAs("-gle?");
+		p.accept("/goo").asBoolean(1).setMandatory().describedAs("Something something");
 		p.accept("/aaa").asString(1).describedAs("Jada Jada Jada");
 		p.accept("/bbb").asString(1, Constructor.NO_PARAMETER_LIMIT).describedAs("A long non descriptive description without any meaning what so ever");
 		assertTrue(p.parse("/bool", "1", "single", "/goo", "true", "/aaa", "AAA", "/bbb", "123", "456", "789"));
@@ -134,8 +134,10 @@ public class CmdParser4JTest {
 		assertEquals("123", p.getString("/bbb", 0, "blah"));
 		assertEquals("456", p.getString("/bbb", 1, "blah"));
 		assertEquals("789", p.getString("/bbb", 2, "blah"));
-		String s = p.getUsage("application name");
-		System.out.println(s);
+
+		SystemOutputUsageFormatter usage = new SystemOutputUsageFormatter("application name");
+		p.getUsage(usage);
+		System.out.println(usage);
 	}
 
 	@Test
@@ -299,7 +301,10 @@ public class CmdParser4JTest {
 		assertEquals("parameter3", p.getString("-multi", 2));
 		assertEquals(null, p.getString("-multi", 4));
 
-		System.out.println(p.getUsage("myApp"));
+		SystemOutputUsageFormatter usage = new SystemOutputUsageFormatter("MyCmdString");
+		p.getUsage(usage);
+
+		System.out.println(usage);
 	}
 
 	@Test
