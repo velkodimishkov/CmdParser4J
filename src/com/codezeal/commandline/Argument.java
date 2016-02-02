@@ -84,21 +84,8 @@ class Argument {
 		return myNames.get(0);
 	}
 
-	String getAliases() {
-		StringBuilder sb = new StringBuilder();
-		if (myNames.size() > 1) {
-			sb.append("[");
-			int count = 0;
-			for (String arg : myNames.subList(1, myNames.size() - 1)) {
-				if (count > 0) {
-					sb.append("|");
-				}
-				++count;
-				sb.append(arg);
-			}
-			sb.append("]");
-		}
-		return sb.toString();
+	List<String> getAliases() {
+		return myNames.subList(myNames.size()-1 >= 1 ? 1 : 0, myNames.size() - 1);
 	}
 
 	void addAliases(String[] aliases) {
@@ -118,21 +105,12 @@ class Argument {
 		myDescription = description;
 	}
 
-	String getUsage() {
-		String s = String.format("%s", getPrimaryName());
-		if (myType.getMaxParameterCount() == Constructor.NO_PARAMETER_LIMIT) {
-			s += " <arg1> ... <argN>";
-		} else {
-			for (int i = 0; i < myType.getMaxParameterCount(); ++i) {
-				s += (i == 0 ? "" : " ") + " <arg" + (i + 1) + ">";
-			}
-		}
-
-		return s;
-	}
-
 	boolean hasVariableParameterCount() {
 		return myType.getMaxParameterCount() != myType.getMinimumParameterCount();
+	}
+
+	int getMaxArgumentCount() {
+		return myType.getMaxParameterCount();
 	}
 
 	void addDependency(String dependencyArgument) {
@@ -174,10 +152,10 @@ class Argument {
 					Argument blockedBy = argumentsToTestAgainst.get(blocker);
 					if (blockedBy == null) {
 						// Can't find the argument, this is a programming error
-						myResult.noSuchMutuallyExclusiveArgumentDefined( getPrimaryName(), blocker);
+						myResult.noSuchMutuallyExclusiveArgumentDefined(getPrimaryName(), blocker);
 						result = false;
 					} else if (blockedBy.isSuccessFullyParsed()) {
-						myResult.argumentsAreMutuallyExclusive( getPrimaryName(), blockedBy.getPrimaryName());
+						myResult.argumentsAreMutuallyExclusive(getPrimaryName(), blockedBy.getPrimaryName());
 						result = false;
 					}
 				}
