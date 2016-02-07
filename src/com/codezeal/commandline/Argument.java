@@ -53,11 +53,9 @@ class Argument {
 				if (myName.equals(arg)) {
 					if (ix == -1) {
 						ix = args.indexOf(myName);
-						++count;
-					} else {
-						// More than one hit
-						++count;
 					}
+					// Count number of hits
+					++count;
 				}
 			}
 		}

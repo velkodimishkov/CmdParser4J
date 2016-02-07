@@ -29,7 +29,7 @@ abstract class BaseType<T> {
 		// Save and remove the argument name
 		String argumentName = args.remove(argumentIx);
 
-		// Enough parameters left=
+		// Enough parameters left?
 		boolean res = hasEnoughParametersLeft(args, argumentIx);
 
 		if (res) {
