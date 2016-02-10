@@ -1,3 +1,6 @@
+// Copyright (c) 2016 Per Malmberg
+// Licensed under MIT, see LICENSE file.
+
 package com.codezeal.commandline;
 
 /**
@@ -26,7 +29,11 @@ public class Changeable<T> {
 		return value.hashCode();
 	}
 
-	public T get() { return value; }
+	public T get() {
+		return value;
+	}
 
-	public void set( T value ) { this.value = value; }
+	public void set(T value) {
+		this.value = value;
+	}
 }
