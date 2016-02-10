@@ -124,7 +124,7 @@ public class CmdParser4J {
 				if (hitCount.get() > 1) {
 					// Same argument multiple times - that's bad
 					res = false;
-					myResult.messageSpecifiedMultipleTimes(a.getPrimaryName());
+					myResult.ArgumentSpecifiedMultipleTimes(a.getPrimaryName());
 				} else if (a.hasVariableParameterCount()) {
 					variable.add(ix);
 				} else {

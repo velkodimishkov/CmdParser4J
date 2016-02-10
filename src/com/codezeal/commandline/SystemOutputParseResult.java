@@ -12,7 +12,7 @@ public class SystemOutputParseResult implements IParseResult {
 	}
 
 	@Override
-	public void messageSpecifiedMultipleTimes(String primaryName) {
+	public void ArgumentSpecifiedMultipleTimes(String primaryName) {
 		appendLine("The argument '%s' is specified multiple times.", primaryName);
 	}
 

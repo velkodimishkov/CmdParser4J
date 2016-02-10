@@ -7,7 +7,7 @@ package com.codezeal.commandline;
 public interface IParseResult {
 	void unknownArguments(String unknownArguments);
 
-	void messageSpecifiedMultipleTimes(String primaryName);
+	void ArgumentSpecifiedMultipleTimes(String primaryName);
 
 	void multipleMultiArgumentsSpecified();
 
