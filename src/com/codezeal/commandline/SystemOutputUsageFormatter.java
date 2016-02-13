@@ -30,8 +30,9 @@ public class SystemOutputUsageFormatter implements IUsageFormatter {
 	private void FormatArgument(String primaryName, boolean hasVariableParameterCount, int maxArgumentCount, List<String> aliases, String description) {
 		sb.append(String.format("%n%s%s", repeat(' ', indent), primaryName));
 
-		boolean firstAlias = true;
 		if (aliases.size() > 0) {
+			boolean firstAlias = true;
+
 			sb.append(" (");
 			for (String alias : aliases) {
 				if (!firstAlias) {

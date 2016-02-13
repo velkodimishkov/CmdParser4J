@@ -289,26 +289,18 @@ public class CmdParser4J {
 	 *
 	 */
 	public void getUsage(IUsageFormatter usage) {
-		ArrayList<Argument> mandatory = new ArrayList<Argument>();
-		ArrayList<Argument> nonMandatory = new ArrayList<Argument>();
-
-		// Split mandatory from rest
+		// Print mandatory
 		for (Argument a : myArguments.values()) {
-			if (a.isMandatory()) {
-				mandatory.add(a);
-			} else {
-				nonMandatory.add(a);
+			if( a.isMandatory() ) {
+				usage.prepareMandatory(a.getPrimaryName(), a.hasVariableParameterCount(), a.getMaxArgumentCount(), a.getAliases(), a.getDescription());
 			}
 		}
 
-		// Print mandatory
-		for (Argument a : mandatory) {
-			usage.prepareMandatory(a.getPrimaryName(), a.hasVariableParameterCount(), a.getMaxArgumentCount(), a.getAliases(), a.getDescription());
-		}
-
 		// Print non mandatory
-		for (Argument a : nonMandatory) {
-			usage.prepareNonMandatory(a.getPrimaryName(), a.hasVariableParameterCount(), a.getMaxArgumentCount(), a.getAliases(), a.getDescription());
+		for (Argument a : myArguments.values()) {
+			if( !a.isMandatory()) {
+				usage.prepareNonMandatory(a.getPrimaryName(), a.hasVariableParameterCount(), a.getMaxArgumentCount(), a.getAliases(), a.getDescription());
+			}
 		}
 	}
 
