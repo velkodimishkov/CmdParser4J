@@ -3,6 +3,8 @@
 
 package com.codezeal.commandline;
 
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
+
 /**
  * Created by Per Malmberg on 2015-12-05.
  */
@@ -119,6 +121,11 @@ public class Constructor {
 	 */
 	public Constructor blockedBy( String blockedByPrimaryName ) {
 		myArg.addBlockedBy( blockedByPrimaryName );
+		return this;
+	}
+
+	public Constructor setHidden(){
+		myArg.setHidden();
 		return this;
 	}
 }

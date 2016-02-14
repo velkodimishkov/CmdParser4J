@@ -286,19 +286,18 @@ public class CmdParser4J {
 
 	/**
 	 * Gets a string describing the usage, suitable for printing to the console.
-	 *
 	 */
 	public void getUsage(IUsageFormatter usage) {
 		// Print mandatory
 		for (Argument a : myArguments.values()) {
-			if( a.isMandatory() ) {
+			if (a.isMandatory() && !a.isHidden()) {
 				usage.prepareMandatory(a.getPrimaryName(), a.hasVariableParameterCount(), a.getMaxArgumentCount(), a.getAliases(), a.getDescription());
 			}
 		}
 
 		// Print non mandatory
 		for (Argument a : myArguments.values()) {
-			if( !a.isMandatory()) {
+			if (!a.isMandatory() && !a.isHidden()) {
 				usage.prepareNonMandatory(a.getPrimaryName(), a.hasVariableParameterCount(), a.getMaxArgumentCount(), a.getAliases(), a.getDescription());
 			}
 		}
@@ -314,7 +313,6 @@ public class CmdParser4J {
 
 		return result;
 	}
-
 
 
 	/**

@@ -20,6 +20,7 @@ class Argument {
 	private BaseType myType = null;
 	private String myDescription = "";
 	private IParseResult myResult;
+	private boolean isHidden = false;
 
 
 	public Argument(String argumentName, IParseResult result) {
@@ -80,13 +81,20 @@ class Argument {
 		myIsMandatory = true;
 	}
 
+	void setHidden() {
+		isHidden = true;
+	}
+
+	boolean isHidden() {
+		return isHidden;
+	}
 
 	String getPrimaryName() {
 		return myNames.get(0);
 	}
 
 	List<String> getAliases() {
-		return myNames.subList(myNames.size()-1 >= 1 ? 1 : 0, myNames.size() - 1);
+		return myNames.subList(myNames.size() - 1 >= 1 ? 1 : 0, myNames.size() - 1);
 	}
 
 	void addAliases(String[] aliases) {
