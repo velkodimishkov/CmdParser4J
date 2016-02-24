@@ -10,6 +10,8 @@
 * Constraint validation
   * Same argument not allowed twice
   * Guard against unknown arguments.
+* Custom "usage" formatting.
+* Custom error messages.
 
 ## Portes
 A C++ port is available here: https://github.com/PerMalmberg/CmdParser4Cpp
