@@ -11,6 +11,9 @@
   * Same argument not allowed twice
   * Guard against unknown arguments.
 
+## Portes
+A C++ port is available here: https://github.com/PerMalmberg/CmdParser4Cpp
+
 ## Usage
 This example is taken from the test cases.
 
