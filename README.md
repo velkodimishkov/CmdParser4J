@@ -6,9 +6,10 @@
 * Mandatory and optional arguments.
 * Dependencies between arguments, i.e. if entered, an argument may require another argument to be entered too.
 * Mutually exclusive arguments.
+* Hidden arguments
 * Constraint validation
   * Same argument not allowed twice
-  * Only allow a single argument with variable number of parameters and placement of such an argument at the end of the command line.
+  * Guard against unknown arguments.
 
 ## Usage
 This example is taken from the test cases.
