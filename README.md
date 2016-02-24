@@ -41,7 +41,7 @@ assertEquals("parameter3", p.getString("-multi", 2));
 assertEquals(null, p.getString("-multi", 4));
 ```
 
-The parser also supports printing usage text;
+Printing (customizable) usage text:
 ```Java
 IUsageFormatter usage = new SystemOutputUsageFormatter("MyCmdString");
 p.getUsage(usage);
