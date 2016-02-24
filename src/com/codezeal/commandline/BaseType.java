@@ -4,6 +4,7 @@
 package com.codezeal.commandline;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Per Malmberg on 2015-12-05.
@@ -28,7 +29,7 @@ abstract class BaseType<T> {
 		return myResults.size();
 	}
 
-	final boolean parse(ArrayList<String> args, int argumentIx) {
+	final boolean parse(List<String> args, int argumentIx) {
 		// Save and remove the argument name
 		String argumentName = args.remove(argumentIx);
 
@@ -83,7 +84,7 @@ abstract class BaseType<T> {
 	/**
 	 * Determines if there are enough parameters to parse
 	 */
-	private boolean hasEnoughParametersLeft(ArrayList<String> args, int argumentIx) {
+	private boolean hasEnoughParametersLeft(List<String> args, int argumentIx) {
 		// Calculate remaining arguments until the prefix is found.
 		int remaining = 0;
 
@@ -106,7 +107,7 @@ abstract class BaseType<T> {
 	T getResult(int index, T defaultValue) {
 		T res = defaultValue;
 
-		if (myResults.size() >= index && index < myResults.size()) {
+		if ( index >= 0 && index < myResults.size()) {
 			res = myResults.get(index);
 		}
 

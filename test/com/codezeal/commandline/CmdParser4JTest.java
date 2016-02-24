@@ -158,17 +158,21 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testMultiArgumentAtEnd() throws Exception {
+	public void testMultiArgumentInMiddle() throws Exception {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J("/", msg);
 		p.accept("single").asSingleBoolean().describedAs("AAA BBBBB CCCCCCCCCCC DDDDDDDDDDDDDDE EEEEEEEEEEEEEEEE FFFFFFFFFFF GGGGGGGGGGGGGGG HHHHHHHHHHHH");
 		p.accept("/bool").asBoolean(1).withAlias("/B", "-B", "-b").describedAs("A Boolean value").setMandatory();
 		p.accept("/string").asString(1).describedAs("A string argument");
 		p.accept("/goo").asBoolean(1).setMandatory().describedAs("-gle?");
-		p.accept("/aaa").asString(1).describedAs("Jada Jada Jada");
+		p.accept("/aaa").asString(3).describedAs("Jada Jada Jada");
 		p.accept("/bbb").asString(1, Constructor.NO_PARAMETER_LIMIT).describedAs("A long non descriptive description without any meaning what so ever");
-		assertFalse(p.parse("/bool", "1", "single", "/goo", "true", "/bbb", "AAA", "/aaa", "123", "456", "789"));
-		assertTrue(msg.getParseResult().contains("An argument that allows variable number of parameters must be places last on the command line"));
+		assertTrue(p.parse("/bool", "1", "single", "/goo", "true", "/bbb", "AAA", "BBB", "CCC", "/aaa", "123", "456", "789"));
+		String s = msg.getParseResult();
+		assertEquals("AAA", p.getString("/bbb", 0));
+		assertEquals("BBB", p.getString("/bbb", 1));
+		assertEquals("CCC", p.getString("/bbb", 2));
+		assertEquals(null, p.getString("/bbb", 3));
 	}
 
 	@Test
@@ -198,8 +202,11 @@ public class CmdParser4JTest {
 		CmdParser4J p = new CmdParser4J("/", msg);
 		p.accept("/multi1").asBoolean(1, 3);
 		p.accept("/multi2").asBoolean(1, 3);
-		assertFalse(p.parse("/multi1", "1", "/multi2", "1"));
-		assertTrue(msg.getParseResult().contains("Multiple arguments which allows for variable parameter count are specified on the command line"));
+		assertTrue(p.parse("/multi1", "1", "0", "/multi2", "0", "true"));
+		assertEquals(true, p.getBool("/multi1", 0));
+		assertEquals(false, p.getBool("/multi1", 1));
+		assertEquals(false, p.getBool("/multi2", 0));
+		assertEquals(true, p.getBool("/multi2", 1));
 	}
 
 	@Test

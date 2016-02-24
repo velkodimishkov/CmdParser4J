@@ -58,19 +58,38 @@ public class CmdParser4J {
 		boolean result = checkConstraints(args);
 
 		if (result) {
-			Iterator<Argument> currentArg = myArguments.values().iterator();
 
-			// Let each Argument have a go until there are no more arguments available
-			// (we rely on that the Argument removes the parts it uses from the 'args' array)
-			while (currentArg.hasNext() && result && args.size() > 0) {
-				Argument a = currentArg.next();
-				result = a.parse(args);
-			}
+			ArrayList<Map.Entry<Integer, Argument>> argumentIndexes = new ArrayList<Map.Entry<Integer, Argument>>();
+			GetIndexes(argumentIndexes, args);
 
-			if (result && args.size() > 0) {
-				// Leftovers on commandline.
-				myResult.unknownArguments(args.toString());
-				result = false;
+			// Now let each argument parse any parameter until the next argument.
+			// This ensures that an argument isn't considered as a parameter to another argument.
+			for (int i = 0; result && i < argumentIndexes.size(); ++i) {
+				Map.Entry<Integer, Argument> curr = argumentIndexes.get(i);
+
+				int argumentPos = curr.getKey();
+				int nextArgumentPos;
+
+				// Are there more arguments left? If so, stop at that one. Otherwise take parameters until end.
+				if (i == (argumentIndexes.size() - 1)) {
+					nextArgumentPos = args.size();
+				} else {
+					nextArgumentPos = argumentIndexes.get(i + 1).getKey();
+				}
+
+				// Get a copy of the argument and the parameters after the argument.
+				// Must use a new list because a subList returns a list that affects the original one, and since
+				// the Argument.parse() modifies it we can't allow that.
+				List<String> parameters = new ArrayList<String>( args.subList(argumentPos, nextArgumentPos) );
+
+				// Let the argument parse its parameters
+				result = curr.getValue().parse(parameters);
+
+				if (result && parameters.size() > 0) {
+					// Leftovers from command line
+					myResult.unknownArguments(parameters.toString());
+					result = false;
+				}
 			}
 
 			result &= checkMandatory();
@@ -79,6 +98,23 @@ public class CmdParser4J {
 		}
 
 		return result;
+	}
+
+	void GetIndexes(ArrayList<Map.Entry<Integer, Argument>> argumentIndexes, final ArrayList<String> arguments) {
+		Changeable<Integer> hit = new Changeable<Integer>(0);
+		for (Argument a : myArguments.values()) {
+			int ix = a.findArgument(arguments, hit);
+			if (ix != -1) {
+				argumentIndexes.add(new AbstractMap.SimpleEntry<Integer, Argument>(ix, a));
+			}
+		}
+
+		Collections.sort(argumentIndexes, new Comparator<Map.Entry<Integer, Argument>>() {
+			@Override
+			public int compare(Map.Entry<Integer, Argument> left, Map.Entry<Integer, Argument> right) {
+				return left.getKey().compareTo(right.getKey());
+			}
+		});
 	}
 
 
@@ -115,10 +151,8 @@ public class CmdParser4J {
 
 	private boolean checkConstraints(ArrayList<String> args) {
 		boolean res = true;
-		// Find all arguments with unlimited parameters specified on the command line
-		ArrayList<Integer> variable = new ArrayList<Integer>();
-		ArrayList<Integer> argumentIndexes = new ArrayList<Integer>();
 
+		// Find all arguments duplicates
 		for (Argument a : myArguments.values()) {
 			Changeable<Integer> hitCount = new Changeable<Integer>(0);
 			int ix = a.findArgument(args, hitCount);
@@ -128,29 +162,7 @@ public class CmdParser4J {
 					// Same argument multiple times - that's bad
 					res = false;
 					myResult.ArgumentSpecifiedMultipleTimes(a.getPrimaryName());
-				} else if (a.hasVariableParameterCount()) {
-					variable.add(ix);
-				} else {
-					argumentIndexes.add(ix);
 				}
-			}
-		}
-
-		if (res && variable.size() > 1) {
-			res = false;
-			myResult.multipleMultiArgumentsSpecified();
-		}
-
-		if (res && variable.size() == 1) {
-			// Check if the argument is last on the list
-			int max = variable.get(0);
-			for (Integer curr : argumentIndexes) {
-				max = Math.max(max, curr);
-			}
-
-			if (variable.get(0) < max) {
-				res = false;
-				myResult.multiArgumentMustBePlacedLast();
 			}
 		}
 

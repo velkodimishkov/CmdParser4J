@@ -20,16 +20,6 @@ public class SystemOutputParseResult implements IParseResult {
 	}
 
 	@Override
-	public void multipleMultiArgumentsSpecified() {
-		appendLine("Multiple arguments which allows for variable parameter count are specified on the command line.");
-	}
-
-	@Override
-	public void multiArgumentMustBePlacedLast() {
-		appendLine("An argument that allows variable number of parameters must be places last on the command line.");
-	}
-
-	@Override
 	public void missingMandatoryArgument(String primaryName) {
 		appendLine("The mandatory argument '%s' is missing", primaryName);
 	}

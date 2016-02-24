@@ -12,10 +12,6 @@ public interface IParseResult {
 
 	void ArgumentSpecifiedMultipleTimes(String primaryName);
 
-	void multipleMultiArgumentsSpecified();
-
-	void multiArgumentMustBePlacedLast();
-
 	void missingMandatoryArgument(String primaryName);
 
 	String getParseResult();

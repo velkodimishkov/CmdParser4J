@@ -28,7 +28,7 @@ class Argument {
 		myResult = result;
 	}
 
-	public boolean parse(ArrayList<String> args) {
+	public boolean parse(List<String> args) {
 
 		boolean result = true;
 
@@ -48,7 +48,7 @@ class Argument {
 	/**
 	 * Searches for this argument in the provided list.
 	 */
-	int findArgument(ArrayList<String> args, Changeable<Integer> hitCount) {
+	int findArgument(List<String> args, Changeable<Integer> hitCount) {
 		int ix = -1;
 		int count = 0;
 
