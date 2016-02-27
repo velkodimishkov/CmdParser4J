@@ -6,9 +6,15 @@
 * Mandatory and optional arguments.
 * Dependencies between arguments, i.e. if entered, an argument may require another argument to be entered too.
 * Mutually exclusive arguments.
+* Hidden arguments
 * Constraint validation
   * Same argument not allowed twice
-  * Only allow a single argument with variable number of parameters and placement of such an argument at the end of the command line.
+  * Guard against unknown arguments.
+* Custom "usage" formatting.
+* Custom error messages.
+
+## Portes
+A C++ port is available here: https://github.com/PerMalmberg/CmdParser4Cpp
 
 ## Usage
 This example is taken from the test cases.
@@ -35,7 +41,7 @@ assertEquals("parameter3", p.getString("-multi", 2));
 assertEquals(null, p.getString("-multi", 4));
 ```
 
-The parser also supports printing usage text;
+Printing (customizable) usage text:
 ```Java
 IUsageFormatter usage = new SystemOutputUsageFormatter("MyCmdString");
 p.getUsage(usage);
