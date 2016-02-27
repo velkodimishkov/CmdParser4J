@@ -18,7 +18,7 @@ public class CmdParser4JTest {
 	@Test
 	public void testParse() throws Exception {
 		IParseResult msg = new SystemOutputParseResult();
-		CmdParser4J p = new CmdParser4J("-", msg);
+		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("-m").asString(2);
 		assertTrue(p.parse("-m", VAR_OPT_SOME_FOLDER_FOO, OTHER_PATH));
 		assertEquals(2, p.getAvailableStringParameterCount("-m"));
@@ -31,7 +31,7 @@ public class CmdParser4JTest {
 	@Test
 	public void testSpecifiedMultipleTimes() throws Exception {
 		IParseResult msg = new SystemOutputParseResult();
-		CmdParser4J p = new CmdParser4J("-", msg);
+		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("-q").asString(1).withAlias("-Q");
 		assertFalse(p.parse("-q", "Foo", "-Q", "Bar"));
 		String s = msg.getParseResult();
@@ -41,7 +41,7 @@ public class CmdParser4JTest {
 	@Test
 	public void testMissingMandatory() throws Exception {
 		IParseResult msg = new SystemOutputParseResult();
-		CmdParser4J p = new CmdParser4J("-", msg);
+		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("-q").asString(1).setMandatory();
 		p.accept("-Q").asString(1);
 		assertFalse(p.parse("-Q", "Bar"));
@@ -51,7 +51,7 @@ public class CmdParser4JTest {
 	@Test
 	public void testLeftOvers() throws Exception {
 		IParseResult msg = new SystemOutputParseResult();
-		CmdParser4J p = new CmdParser4J("-", msg);
+		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("-Q").asString(1);
 		assertFalse(p.parse("-Q", "Bar", "some", "extra"));
 		assertTrue(msg.getParseResult().contains("Unknown arguments on the command line"));
@@ -60,7 +60,7 @@ public class CmdParser4JTest {
 	@Test
 	public void testBoolean() throws Exception {
 		IParseResult msg = new SystemOutputParseResult();
-		CmdParser4J p = new CmdParser4J("/", msg);
+		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("/b").asBoolean(4);
 		p.accept("/bar").withAlias("/foo").asBoolean(1);
 		assertTrue(p.parse("/b", "true", "1", "0", "false", "/foo", "false"));
@@ -74,7 +74,7 @@ public class CmdParser4JTest {
 	@Test
 	public void testSingleBoolean() throws Exception {
 		IParseResult msg = new SystemOutputParseResult();
-		CmdParser4J p = new CmdParser4J("-", msg);
+		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("foo").asSingleBoolean();
 		p.accept("bar").asSingleBoolean();
 		assertTrue(p.parse("foo", "bar"));
@@ -86,7 +86,7 @@ public class CmdParser4JTest {
 	@Test
 	public void testFailedParse() throws Exception {
 		IParseResult msg = new SystemOutputParseResult();
-		CmdParser4J p = new CmdParser4J("/", msg);
+		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("/b").asBoolean(4);
 		assertFalse(p.parse("/b", "true", "1", "Nope", "false"));
 		assertTrue(msg.getParseResult().contains("Parsing of argument"));
@@ -95,7 +95,7 @@ public class CmdParser4JTest {
 	@Test
 	public void testMissingParameters() throws Exception {
 		IParseResult msg = new SystemOutputParseResult();
-		CmdParser4J p = new CmdParser4J("/", msg);
+		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("/b").asBoolean(4);
 		assertFalse(p.parse("/b", "true", "1", "Nope"));
 		assertTrue(msg.getParseResult().contains("There are not enough parameters for the argument"));
@@ -104,7 +104,7 @@ public class CmdParser4JTest {
 	@Test
 	public void testMissingParameters2() throws Exception {
 		IParseResult msg = new SystemOutputParseResult();
-		CmdParser4J p = new CmdParser4J("/", msg);
+		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("/b").asBoolean(4);
 		assertFalse(p.parse("/b"));
 		assertTrue(msg.getParseResult().contains("There are not enough parameters for the argument"));
@@ -113,7 +113,7 @@ public class CmdParser4JTest {
 	@Test
 	public void testNoInputWithMandatory() throws Exception {
 		IParseResult msg = new SystemOutputParseResult();
-		CmdParser4J p = new CmdParser4J("/", msg);
+		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("/b").asBoolean(1).setMandatory();
 		assertFalse(p.parse(""));
 		assertTrue(msg.getParseResult().contains("The mandatory argument"));
@@ -122,7 +122,7 @@ public class CmdParser4JTest {
 	@Test
 	public void testDescription() throws Exception {
 		IParseResult msg = new SystemOutputParseResult();
-		CmdParser4J p = new CmdParser4J("/", msg);
+		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("single").asSingleBoolean().describedAs("AAA BBBBB CCCCCCCCCCC DDDDDDDDDDDDDDE EEEEEEEEEEEEEEEE FFFFFFFFFFF GGGGGGGGGGGGGGG HHHHHHHHHHHH");
 		p.accept("/bool").asBoolean(1).withAlias("/B", "-B", "-b").describedAs("A Boolean value").setMandatory();
 		p.accept("/string").asString(1).describedAs("A string argument");
@@ -146,7 +146,7 @@ public class CmdParser4JTest {
 	@Test
 	public void testVariableParameterCount() throws Exception {
 		IParseResult msg = new SystemOutputParseResult();
-		CmdParser4J p = new CmdParser4J("/", msg);
+		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("/b").asBoolean(1, Constructor.NO_PARAMETER_LIMIT);
 		assertTrue(p.parse("/b", "1", "0", "1", "true", "false"));
 		assertEquals(5, p.getAvailableBooleanParameterCount("/b"));
@@ -160,7 +160,7 @@ public class CmdParser4JTest {
 	@Test
 	public void testMultiArgumentInMiddle() throws Exception {
 		IParseResult msg = new SystemOutputParseResult();
-		CmdParser4J p = new CmdParser4J("/", msg);
+		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("single").asSingleBoolean().describedAs("AAA BBBBB CCCCCCCCCCC DDDDDDDDDDDDDDE EEEEEEEEEEEEEEEE FFFFFFFFFFF GGGGGGGGGGGGGGG HHHHHHHHHHHH");
 		p.accept("/bool").asBoolean(1).withAlias("/B", "-B", "-b").describedAs("A Boolean value").setMandatory();
 		p.accept("/string").asString(1).describedAs("A string argument");
@@ -178,7 +178,7 @@ public class CmdParser4JTest {
 	@Test
 	public void testNotEnoughParameters() throws Exception {
 		IParseResult msg = new SystemOutputParseResult();
-		CmdParser4J p = new CmdParser4J("/", msg);
+		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("/b").asBoolean(2);
 		p.accept("/c").asBoolean(1);
 		assertFalse(p.parse("/b", "true", "/c", "false"));
@@ -188,7 +188,7 @@ public class CmdParser4JTest {
 	@Test
 	public void testNotEnoughParameters2() throws Exception {
 		IParseResult msg = new SystemOutputParseResult();
-		CmdParser4J p = new CmdParser4J("/", msg);
+		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("/a").asBoolean(1);
 		p.accept("/b").asBoolean(3);
 		p.accept("/c").asBoolean(1);
@@ -199,7 +199,7 @@ public class CmdParser4JTest {
 	@Test
 	public void testMultipleMulti() throws Exception {
 		IParseResult msg = new SystemOutputParseResult();
-		CmdParser4J p = new CmdParser4J("/", msg);
+		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("/multi1").asBoolean(1, 3);
 		p.accept("/multi2").asBoolean(1, 3);
 		assertTrue(p.parse("/multi1", "1", "0", "/multi2", "0", "true"));
@@ -212,7 +212,7 @@ public class CmdParser4JTest {
 	@Test
 	public void testSameArgumentMultipleTimes() throws Exception {
 		IParseResult msg = new SystemOutputParseResult();
-		CmdParser4J p = new CmdParser4J("/", msg);
+		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("/multi1").asBoolean(1, 3);
 		p.accept("/multi2").asBoolean(1, 3);
 		assertFalse(p.parse("/multi1", "1", "/multi1", "1"));
@@ -223,7 +223,7 @@ public class CmdParser4JTest {
 	@Test
 	public void testDependsOnMissing() throws Exception {
 		IParseResult msg = new SystemOutputParseResult();
-		CmdParser4J p = new CmdParser4J("-", msg);
+		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("-first").dependsOn("-second").asBoolean(1);
 		p.accept("-second").asBoolean(1);
 		assertFalse(p.parse("-first", "false"));
@@ -233,7 +233,7 @@ public class CmdParser4JTest {
 	@Test
 	public void testDependsOnOk() throws Exception {
 		IParseResult msg = new SystemOutputParseResult();
-		CmdParser4J p = new CmdParser4J("-", msg);
+		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("-first").dependsOn("-second").asBoolean(1);
 		p.accept("-second").asBoolean(1);
 		assertTrue(p.parse("-first", "false", "-second", "true"));
@@ -243,7 +243,7 @@ public class CmdParser4JTest {
 	@Test
 	public void testDependsTwoWay() throws Exception {
 		IParseResult msg = new SystemOutputParseResult();
-		CmdParser4J p = new CmdParser4J("-", msg);
+		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("-first").dependsOn("-second").asBoolean(1);
 		p.accept("-second").dependsOn("-first").asBoolean(1);
 		assertTrue(p.parse("-first", "false", "-second", "true"));
@@ -253,7 +253,7 @@ public class CmdParser4JTest {
 	@Test
 	public void testDependsTwoWayFail() throws Exception {
 		IParseResult msg = new SystemOutputParseResult();
-		CmdParser4J p = new CmdParser4J("-", msg);
+		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("-first").dependsOn("-second").asBoolean(1);
 		p.accept("-second").dependsOn("-first").asBoolean(1);
 		assertFalse(p.parse("-second", "true"));
@@ -263,7 +263,7 @@ public class CmdParser4JTest {
 	@Test
 	public void testDependsOnProgrammingError() throws Exception {
 		IParseResult msg = new SystemOutputParseResult();
-		CmdParser4J p = new CmdParser4J("-", msg);
+		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("-first").dependsOn("-second").asBoolean(1);
 		assertFalse(p.parse("-first", "false"));
 		assertTrue(msg.getParseResult().contains("Argument '-first' depends on '-second', but no such argument is defined - contact the author of the application"));
@@ -272,7 +272,7 @@ public class CmdParser4JTest {
 	@Test
 	public void testBlockedByOK() throws Exception {
 		IParseResult msg = new SystemOutputParseResult();
-		CmdParser4J p = new CmdParser4J("-", msg);
+		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("-first").blockedBy("-second").asSingleBoolean();
 		p.accept("-second").blockedBy("-first").asSingleBoolean();
 		assertTrue(p.parse("-first"));
@@ -281,7 +281,7 @@ public class CmdParser4JTest {
 	@Test
 	public void testBlockedByFAIL() throws Exception {
 		IParseResult msg = new SystemOutputParseResult();
-		CmdParser4J p = new CmdParser4J("-", msg);
+		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("-first").blockedBy("-second").asSingleBoolean();
 		p.accept("-second").blockedBy("-first").asSingleBoolean();
 		assertFalse(p.parse("-first", "-second"));
@@ -292,7 +292,7 @@ public class CmdParser4JTest {
 	@Test
 	public void testGitExample() throws Exception {
 		IParseResult msg = new SystemOutputParseResult();
-		CmdParser4J p = new CmdParser4J("-", msg);
+		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("-argument").asBoolean(1).setMandatory().describedAs("An argument that accept a single boolean parameter");
 		p.accept("-multi").asString(1, 4).describedAs("An optional argument that accept one to four argument.");
 		// The name of the argument, or any prefix characters, doesn't really matter, here we use double dash.
@@ -320,7 +320,7 @@ public class CmdParser4JTest {
 	@Test
 	public void testGitExample2() throws Exception {
 		IParseResult msg = new SystemOutputParseResult();
-		CmdParser4J p = new CmdParser4J("-", msg);
+		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("-argument").asBoolean(1).setMandatory().describedAs("An argument that accept a single boolean parameter");
 		p.accept("-multi").asString(1, 4).describedAs("An optional argument that accept one to four argument.");
 

@@ -16,20 +16,14 @@ public class CmdParser4J {
 	private final HashMap<String, Argument> myArguments = new HashMap<String, Argument>();
 	private final Hashtable<String, StringType> myStringResult = new Hashtable<String, StringType>();
 	private final Hashtable<String, BooleanType> myBoolResult = new Hashtable<String, BooleanType>();
-	private final String myArgumentPrefix;
 	private final IParseResult myResult;
 
 	/**
 	 * Constructs a command line parser
 	 *
-	 * @param argumentPrefix The prefix which commands are expected to be prefixed with, such as '-', '--' or '/'
-	 *                       This is used when determining where the next argument starts. Must be specified.
-	 *                       Even though this argument must be specified, it is fully legal to use arguments without
-	 *                       the leading prefix, but be aware that such arguments cannot be distinguished
-	 *                       from argument parameters as they lack the prefix.
+	 * @param message The object to be used to print parse messages.
 	 */
-	public CmdParser4J(String argumentPrefix, IParseResult message) {
-		myArgumentPrefix = argumentPrefix;
+	public CmdParser4J(IParseResult message) {
 		myResult = message;
 	}
 
@@ -345,10 +339,6 @@ public class CmdParser4J {
 	 */
 	public int getAvailableStringParameterCount(String argumentName) {
 		return getAvailableParameterCount(argumentName, myStringResult);
-	}
-
-	public String getArgumentPrefix() {
-		return myArgumentPrefix;
 	}
 
 	public IParseResult getMessageParser() {

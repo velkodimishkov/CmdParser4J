@@ -34,7 +34,7 @@ abstract class BaseType<T> {
 		String argumentName = args.remove(argumentIx);
 
 		// Enough parameters left?
-		boolean res = hasEnoughParametersLeft(args, argumentIx);
+		boolean res = hasEnoughParametersLeft(args);
 
 		if (res) {
 			// We only do this loop if the current type takes at least one parameter
@@ -50,7 +50,7 @@ abstract class BaseType<T> {
 				res = doTypeParse(parameter);
 			}
 		} else {
-			myResult.notEnoughParameters( argumentName, myMinParameterCount);
+			myResult.notEnoughParameters(argumentName, myMinParameterCount);
 		}
 
 		res = isSuccessFullyParsed();
@@ -84,21 +84,8 @@ abstract class BaseType<T> {
 	/**
 	 * Determines if there are enough parameters to parse
 	 */
-	private boolean hasEnoughParametersLeft(List<String> args, int argumentIx) {
-		// Calculate remaining arguments until the prefix is found.
-		int remaining = 0;
-
-		boolean done = false;
-		for (int i = argumentIx; !done && i < args.size(); ++i) {
-			if (args.get(i).startsWith(myParser.getArgumentPrefix())) {
-				done = true;
-			} else {
-				++remaining;
-			}
-
-		}
-
-		return remaining >= myMinParameterCount;
+	private boolean hasEnoughParametersLeft(List<String> args) {
+		return args.size() >= myMinParameterCount;
 	}
 
 	/**
@@ -107,7 +94,7 @@ abstract class BaseType<T> {
 	T getResult(int index, T defaultValue) {
 		T res = defaultValue;
 
-		if ( index >= 0 && index < myResults.size()) {
+		if (index >= 0 && index < myResults.size()) {
 			res = myResults.get(index);
 		}
 

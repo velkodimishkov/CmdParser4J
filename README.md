@@ -15,7 +15,7 @@ This example is taken from the test cases.
 
 ```Java
 IParseResult msg = new SystemOutputParseResult();
-CmdParser4J p = new CmdParser4J("-", msg);
+CmdParser4J p = new CmdParser4J(msg);
 p.accept("-argument").asBoolean(1).setMandatory().describedAs("An argument that accept a single boolean parameter");
 p.accept("-multi").asString(1, 4).describedAs("An optional argument that accept one to four argument.");
 // The name of the argument, or any prefix characters, doesn't really matter, here we use double dash.
@@ -56,7 +56,7 @@ If ```CmdParser4J.parse()``` returns false, you can easily see what went wrong b
 
 ```Java
 IParseResult msg = new SystemOutputParseResult();
-CmdParser4J p = new CmdParser4J("-", msg);
+CmdParser4J p = new CmdParser4J(msg);
 p.accept("-argument").asBoolean(1).setMandatory().describedAs("An argument that accept a single boolean parameter");
 p.accept("-multi").asString(1, 4).describedAs("An optional argument that accept one to four argument.");
 
