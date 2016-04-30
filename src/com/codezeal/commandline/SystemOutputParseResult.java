@@ -15,7 +15,7 @@ public class SystemOutputParseResult implements IParseResult {
 	}
 
 	@Override
-	public void ArgumentSpecifiedMultipleTimes(String primaryName) {
+	public void argumentSpecifiedMultipleTimes(String primaryName) {
 		appendLine("The argument '%s' is specified multiple times.", primaryName);
 	}
 
@@ -57,6 +57,11 @@ public class SystemOutputParseResult implements IParseResult {
 	@Override
 	public void failedToParseArgument(String argumentName) {
 		appendLine("Parsing of argument '%s' failed", argumentName);
+	}
+
+	@Override
+	public void ArgumentMissingType(String primaryName) {
+		appendLine("'" + primaryName + "' is missing type information. This is a programming error - contact the author of the application");
 	}
 
 	void appendLine(String format, Object... arguments) {

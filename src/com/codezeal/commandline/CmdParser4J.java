@@ -49,12 +49,23 @@ public class CmdParser4J {
 
 		args = removeEmptyArguments(args);
 
-		boolean result = checkConstraints(args);
+		boolean result = checkArgumentTypes() && checkConstraints(args);
 
-		if (result) {
+		ArrayList<Map.Entry<Integer, Argument>> argumentIndexes = new ArrayList<Map.Entry<Integer, Argument>>();
+		GetIndexes(argumentIndexes, args);
 
-			ArrayList<Map.Entry<Integer, Argument>> argumentIndexes = new ArrayList<Map.Entry<Integer, Argument>>();
-			GetIndexes(argumentIndexes, args);
+		if( argumentIndexes.size() == 0 && args.size() > 0) {
+			// Arguments provided on the command line, but no matches found.
+			myResult.unknownArguments( args.toString() );
+			result = false;
+		}
+		else if( argumentIndexes.size() > 0 && argumentIndexes.get(0).getKey() > 0 ) {
+			// Unknown arguments before first matching Argument.
+			List<String> unknown = args.subList(0, argumentIndexes.get(0).getKey() );
+			myResult.unknownArguments( unknown.toString() );
+			result = false;
+		}
+		else {
 
 			// Now let each argument parse any parameter until the next argument.
 			// This ensures that an argument isn't considered as a parameter to another argument.
@@ -94,6 +105,30 @@ public class CmdParser4J {
 		return result;
 	}
 
+	/**
+	 *
+	 * @return
+	 */
+	private boolean checkArgumentTypes() {
+		boolean res = true;
+
+		// Find any argument that has no type
+		for( Argument a : myArguments.values() )
+		{
+			if( !a.hasArgumentType() ) {
+				res = false;
+				myResult.ArgumentMissingType(a.getPrimaryName());
+			}
+		}
+
+		return res;
+	}
+
+	/**
+	 *
+	 * @param argumentIndexes
+	 * @param arguments
+	 */
 	void GetIndexes(ArrayList<Map.Entry<Integer, Argument>> argumentIndexes, final ArrayList<String> arguments) {
 		Changeable<Integer> hit = new Changeable<Integer>(0);
 		for (Argument a : myArguments.values()) {
@@ -155,7 +190,7 @@ public class CmdParser4J {
 				if (hitCount.get() > 1) {
 					// Same argument multiple times - that's bad
 					res = false;
-					myResult.ArgumentSpecifiedMultipleTimes(a.getPrimaryName());
+					myResult.argumentSpecifiedMultipleTimes(a.getPrimaryName());
 				}
 			}
 		}

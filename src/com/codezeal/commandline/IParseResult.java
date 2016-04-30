@@ -3,6 +3,8 @@
 
 package com.codezeal.commandline;
 
+import java.util.ArrayList;
+
 /**
  * Interface used by the parser to notify the application of parse errors/events.
  * Created by Per Malmberg on 2016-01-30. *
@@ -10,7 +12,7 @@ package com.codezeal.commandline;
 public interface IParseResult {
 	void unknownArguments(String unknownArguments);
 
-	void ArgumentSpecifiedMultipleTimes(String primaryName);
+	void argumentSpecifiedMultipleTimes(String primaryName);
 
 	void missingMandatoryArgument(String primaryName);
 
@@ -27,4 +29,6 @@ public interface IParseResult {
 	void notEnoughParameters(String argumentName, int myMinParameterCount);
 
 	void failedToParseArgument(String argumentName);
+
+	void ArgumentMissingType(String primaryName);
 }

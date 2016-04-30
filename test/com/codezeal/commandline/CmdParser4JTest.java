@@ -330,4 +330,37 @@ public class CmdParser4JTest {
 		System.out.println(msg.getParseResult());
 	}
 
+	@Test
+	public void testMissingArgumentTypee() throws Exception {
+		IParseResult msg = new SystemOutputParseResult();
+		CmdParser4J p = new CmdParser4J(msg);
+
+		p.accept("-first").describedAs("The first");
+		assertFalse(p.parse("-first"));
+		String s = msg.getParseResult();
+		assert (s.contains("is missing type information"));
+	}
+
+	@Test
+	public void testGarbageOnCommandLine() throws Exception {
+		IParseResult msg = new SystemOutputParseResult();
+		CmdParser4J p = new CmdParser4J(msg);
+
+		p.accept("-first").asSingleBoolean();
+		assertFalse(p.parse("jada", "Jada"));
+		String s = msg.getParseResult();
+		assert (s.contains("jada, Jada"));
+	}
+
+	@Test
+	public void testGarbageBeforeFirstCommand() throws Exception {
+		IParseResult msg = new SystemOutputParseResult();
+		CmdParser4J p = new CmdParser4J(msg);
+
+		p.accept("-first").asSingleBoolean();
+		assertFalse(p.parse("jada", "-first"));
+		String s = msg.getParseResult();
+		assert (s.contains("jada"));
+	}
+
 }

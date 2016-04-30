@@ -173,4 +173,8 @@ class Argument {
 
 		return result;
 	}
+
+	public boolean hasArgumentType() {
+		return myType != null;
+	}
 }
