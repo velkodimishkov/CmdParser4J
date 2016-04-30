@@ -168,7 +168,6 @@ public class CmdParser4JTest {
 		p.accept("/aaa").asString(3).describedAs("Jada Jada Jada");
 		p.accept("/bbb").asString(1, Constructor.NO_PARAMETER_LIMIT).describedAs("A long non descriptive description without any meaning what so ever");
 		assertTrue(p.parse("/bool", "1", "single", "/goo", "true", "/bbb", "AAA", "BBB", "CCC", "/aaa", "123", "456", "789"));
-		String s = msg.getParseResult();
 		assertEquals("AAA", p.getString("/bbb", 0));
 		assertEquals("BBB", p.getString("/bbb", 1));
 		assertEquals("CCC", p.getString("/bbb", 2));
