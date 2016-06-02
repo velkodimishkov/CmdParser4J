@@ -12,18 +12,18 @@ import static org.junit.Assert.*;
  */
 public class CmdParser4JTest {
 
-	private static final String VAR_OPT_SOME_FOLDER_FOO = "/var/opt/some folder/foo/";
-	private static final String OTHER_PATH = "/other/path/";
-
 	@Test
 	public void testParse() throws Exception {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("-m").asString(2);
-		assertTrue(p.parse("-m", VAR_OPT_SOME_FOLDER_FOO, OTHER_PATH));
+		p.accept("-b").asBoolean(1);
+
+		assertTrue(p.parse("-m", "", "one", "two", "-b", "1"));
 		assertEquals(2, p.getAvailableStringParameterCount("-m"));
-		assertEquals(VAR_OPT_SOME_FOLDER_FOO, p.getString("-m"));
-		assertEquals(OTHER_PATH, p.getString("-m", 1));
+		assertEquals("one", p.getString("-m"));
+		assertEquals("two", p.getString("-m", 1));
+		assertTrue(p.getBool("-b"));
 
 		assertEquals(null, p.getString("-multi", 2));
 	}
