@@ -32,6 +32,10 @@ public class ResultEnvelope implements IStringTypeEnvelope, IBooleanTypeEnvelope
 		return getAvailableParameterCount(primaryName, myBooleanResults);
 	}
 
+	public int getAvailableIntegerParameterCount(String primaryName) {
+		return getAvailableParameterCount(primaryName, myIntegerResults);
+	}
+
 	private int getAvailableParameterCount(String primaryName, HashMap<String, ? extends BaseType> map) {
 		int res = 0;
 		BaseType t = map.get(primaryName);

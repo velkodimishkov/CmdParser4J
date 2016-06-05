@@ -382,6 +382,10 @@ public class CmdParser4J {
 		return myResults.getAvailableBooleanParameterCount(primaryArgumentName);
 	}
 
+	public int getAvailableIntegerParameterCount(String primaryArgumentName) {
+		return myResults.getAvailableIntegerParameterCount(primaryArgumentName);
+	}
+
 	public IParseResult getMessageParser() {
 		return myResult;
 	}

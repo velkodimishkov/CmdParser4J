@@ -34,7 +34,7 @@ public class CmdParser4JTest {
 
 		assertTrue(p.parse("-b"));
 		assertTrue(p.getBool("-b"));
-		assertEquals("default", p.getString("-b", 0, "default") );
+		assertEquals("default", p.getString("-b", 0, "default"));
 	}
 
 	@Test
@@ -99,7 +99,8 @@ public class CmdParser4JTest {
 		p.accept("-a").asInteger(1);
 		p.accept("-b").asInteger(2);
 		assertTrue(p.parse("-a", "5", "-b", "1", "2"));
-		assertEquals(8, p.getInteger("-a") + p.getInteger("-b", 0 ) + p.getInteger("-b", 1, 1000) + p.getInteger("-b", 10, 0));
+		assertTrue(p.getAvailableIntegerParameterCount("-b") == 2);
+		assertEquals(8, p.getInteger("-a") + p.getInteger("-b", 0) + p.getInteger("-b", 1, 1000) + p.getInteger("-b", 10, 0));
 	}
 
 	@Test
