@@ -7,9 +7,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-/**
- * Created by Per Malmberg on 2015-12-05.
- */
 public class CmdParser4JTest {
 
 	@Test
@@ -21,11 +18,23 @@ public class CmdParser4JTest {
 
 		assertTrue(p.parse("-m", "", "one", "two", "-b", "1"));
 		assertEquals(2, p.getAvailableStringParameterCount("-m"));
+		assertEquals(1, p.getAvailableBooleanParameterCount("-b"));
 		assertEquals("one", p.getString("-m"));
 		assertEquals("two", p.getString("-m", 1));
 		assertTrue(p.getBool("-b"));
 
 		assertEquals(null, p.getString("-multi", 2));
+	}
+
+	@Test
+	public void testWrongType() throws Exception {
+		IParseResult msg = new SystemOutputParseResult();
+		CmdParser4J p = new CmdParser4J(msg);
+		p.accept("-b").asSingleBoolean();
+
+		assertTrue(p.parse("-b"));
+		assertTrue(p.getBool("-b"));
+		assertEquals("default", p.getString("-b", 0, "default") );
 	}
 
 	@Test
@@ -81,6 +90,16 @@ public class CmdParser4JTest {
 		assertTrue(p.getBool("foo", 0));
 		assertTrue(p.getBool("bar", 0));
 		assertFalse(p.getBool("XXX", 0));
+	}
+
+	@Test
+	public void testInteger() throws Exception {
+		IParseResult msg = new SystemOutputParseResult();
+		CmdParser4J p = new CmdParser4J(msg);
+		p.accept("-a").asInteger(1);
+		p.accept("-b").asInteger(2);
+		assertTrue(p.parse("-a", "5", "-b", "1", "2"));
+		assertEquals(8, p.getInteger("-a") + p.getInteger("-b", 0 ) + p.getInteger("-b", 1, 1000) + p.getInteger("-b", 10, 0));
 	}
 
 	@Test

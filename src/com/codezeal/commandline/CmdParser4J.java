@@ -14,9 +14,9 @@ import java.util.*;
  */
 public class CmdParser4J {
 	private final HashMap<String, Argument> myArguments = new HashMap<String, Argument>();
-	private final Hashtable<String, StringType> myStringResult = new Hashtable<String, StringType>();
-	private final Hashtable<String, BooleanType> myBoolResult = new Hashtable<String, BooleanType>();
 	private final IParseResult myResult;
+
+	private final ResultEnvelope myResults = new ResultEnvelope();
 
 	/**
 	 * Constructs a command line parser
@@ -54,18 +54,16 @@ public class CmdParser4J {
 		ArrayList<Map.Entry<Integer, Argument>> argumentIndexes = new ArrayList<Map.Entry<Integer, Argument>>();
 		GetIndexes(argumentIndexes, args);
 
-		if( argumentIndexes.size() == 0 && args.size() > 0) {
+		if (argumentIndexes.size() == 0 && args.size() > 0) {
 			// Arguments provided on the command line, but no matches found.
-			myResult.unknownArguments( args.toString() );
+			myResult.unknownArguments(args.toString());
 			result = false;
-		}
-		else if( argumentIndexes.size() > 0 && argumentIndexes.get(0).getKey() > 0 ) {
+		} else if (argumentIndexes.size() > 0 && argumentIndexes.get(0).getKey() > 0) {
 			// Unknown arguments before first matching Argument.
-			List<String> unknown = args.subList(0, argumentIndexes.get(0).getKey() );
-			myResult.unknownArguments( unknown.toString() );
+			List<String> unknown = args.subList(0, argumentIndexes.get(0).getKey());
+			myResult.unknownArguments(unknown.toString());
 			result = false;
-		}
-		else {
+		} else {
 
 			// Now let each argument parse any parameter until the next argument.
 			// This ensures that an argument isn't considered as a parameter to another argument.
@@ -85,7 +83,7 @@ public class CmdParser4J {
 				// Get a copy of the argument and the parameters after the argument.
 				// Must use a new list because a subList returns a list that affects the original one, and since
 				// the Argument.parse() modifies it we can't allow that.
-				List<String> parameters = new ArrayList<String>( args.subList(argumentPos, nextArgumentPos) );
+				List<String> parameters = new ArrayList<String>(args.subList(argumentPos, nextArgumentPos));
 
 				// Let the argument parse its parameters
 				result = curr.getValue().parse(parameters);
@@ -106,16 +104,16 @@ public class CmdParser4J {
 	}
 
 	/**
+	 * Checks that all arguments have their types set.
 	 *
-	 * @return
+	 * @return true if ok, otherwise false.
 	 */
 	private boolean checkArgumentTypes() {
 		boolean res = true;
 
 		// Find any argument that has no type
-		for( Argument a : myArguments.values() )
-		{
-			if( !a.hasArgumentType() ) {
+		for (Argument a : myArguments.values()) {
+			if (!a.hasArgumentType()) {
 				res = false;
 				myResult.ArgumentMissingType(a.getPrimaryName());
 			}
@@ -125,7 +123,6 @@ public class CmdParser4J {
 	}
 
 	/**
-	 *
 	 * @param argumentIndexes
 	 * @param arguments
 	 */
@@ -241,12 +238,16 @@ public class CmdParser4J {
 		return new Constructor(a, this);
 	}
 
-	void setResult(String primaryName, StringType type) {
-		myStringResult.put(primaryName, type);
+	void setResult(String primaryName, StringType result) {
+		myResults.add(primaryName, result);
 	}
 
-	void setResult(String primaryName, BooleanType type) {
-		myBoolResult.put(primaryName, type);
+	void setResult(String primaryName, BooleanType result) {
+		myResults.add(primaryName, result);
+	}
+
+	void setResult(String primaryName, IntegerType result) {
+		myResults.add(primaryName, result);
 	}
 
 	/**
@@ -256,7 +257,7 @@ public class CmdParser4J {
 	 * @return The parameter value, or false if not found
 	 */
 	public boolean getBool(String argumentName) {
-		return getBool(argumentName, 0, false);
+		return myResults.get(argumentName, 0, false);
 	}
 
 	/**
@@ -267,7 +268,7 @@ public class CmdParser4J {
 	 * @return The parameter value, or false if not found
 	 */
 	public boolean getBool(String argumentName, int index) {
-		return getBool(argumentName, index, false);
+		return myResults.get(argumentName, index, false);
 	}
 
 	/**
@@ -279,12 +280,7 @@ public class CmdParser4J {
 	 * @return The parameter value, or {@code defaultValue} if not found
 	 */
 	public boolean getBool(String argumentName, int index, boolean defaultValue) {
-		boolean res = defaultValue;
-		BooleanType b = myBoolResult.get(argumentName);
-		if (b != null) {
-			res = b.getResult(index, defaultValue);
-		}
-		return res;
+		return myResults.get(argumentName, index, defaultValue);
 	}
 
 	/**
@@ -294,7 +290,7 @@ public class CmdParser4J {
 	 * @return The parameter value, or null if not found
 	 */
 	public String getString(String argumentName) {
-		return getString(argumentName, 0, null);
+		return myResults.get(argumentName, 0, null);
 	}
 
 	/**
@@ -305,7 +301,7 @@ public class CmdParser4J {
 	 * @return The parameter value, or null if not found
 	 */
 	public String getString(String argumentName, int index) {
-		return getString(argumentName, index, null);
+		return myResults.get(argumentName, index, null);
 	}
 
 	/**
@@ -317,12 +313,40 @@ public class CmdParser4J {
 	 * @return The parameter value, or {@code defaultValue} if not found
 	 */
 	public String getString(String argumentName, int index, String defaultValue) {
-		String res = defaultValue;
-		StringType b = myStringResult.get(argumentName);
-		if (b != null) {
-			res = b.getResult(index, defaultValue);
-		}
-		return res;
+		return myResults.get(argumentName, index, defaultValue);
+	}
+
+	/**
+	 * Gets the first parameter for the given {@code argumentName}
+	 *
+	 * @param argumentName The argument name
+	 * @return The parameter value, or 0 if not found
+	 */
+	public int getInteger(String argumentName) {
+		return myResults.get(argumentName, 0, 0);
+	}
+
+	/**
+	 * Gets the parameter at {@code index} for the given {@code argumentName}
+	 *
+	 * @param argumentName The argument name
+	 * @param index        The index
+	 * @return The parameter value, or 0 if not found
+	 */
+	public int getInteger(String argumentName, int index) {
+		return myResults.get(argumentName, index, 0);
+	}
+
+	/**
+	 * Gets the parameter at {@code index} for the given {@code argumentName}
+	 *
+	 * @param argumentName The argument name
+	 * @param index        The index
+	 * @param defaultValue The default value
+	 * @return The parameter value, or {@code defaultValue} if not found
+	 */
+	public int getInteger(String argumentName, int index, int defaultValue) {
+		return myResults.get(argumentName, index, defaultValue);
 	}
 
 	/**
@@ -344,36 +368,18 @@ public class CmdParser4J {
 		}
 	}
 
-
-	private <T extends BaseType> int getAvailableParameterCount(String argumentName, Hashtable<String, T> source) {
-		int result = 0;
-		T t = source.get(argumentName);
-		if (t != null) {
-			result = t.getAvailableParameterCount();
-		}
-
-		return result;
-	}
-
-
 	/**
-	 * Gets the available parameter count for the give argument name of type boolean
+	 * Gets the available parameter count for the give argument name
 	 *
-	 * @param argumentName The argument name
+	 * @param primaryArgumentName The argument name
 	 * @return The number of available parameters
 	 */
-	public int getAvailableBooleanParameterCount(String argumentName) {
-		return getAvailableParameterCount(argumentName, myBoolResult);
+	public int getAvailableStringParameterCount(String primaryArgumentName) {
+		return myResults.getAvailableStringParameterCount(primaryArgumentName);
 	}
 
-	/**
-	 * Gets the available parameter count for the give argument name of type string
-	 *
-	 * @param argumentName The argument name
-	 * @return The number of available parameters
-	 */
-	public int getAvailableStringParameterCount(String argumentName) {
-		return getAvailableParameterCount(argumentName, myStringResult);
+	public int getAvailableBooleanParameterCount(String primaryArgumentName) {
+		return myResults.getAvailableBooleanParameterCount(primaryArgumentName);
 	}
 
 	public IParseResult getMessageParser() {

@@ -3,11 +3,6 @@
 
 package com.codezeal.commandline;
 
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
-
-/**
- * Created by Per Malmberg on 2015-12-05.
- */
 public class Constructor {
 	private final Argument myArg;
 	private final CmdParser4J myParser;
@@ -100,6 +95,30 @@ public class Constructor {
 	 */
 	public Constructor asString(int minParameterCount, int maxParameterCount) {
 		myArg.setType(new StringType(myParser, myArg, minParameterCount, maxParameterCount));
+		return this;
+	}
+
+	/**
+	 * Specifies that the argument takes {@code parameterCount} number of parameters
+	 * of type string.
+	 *
+	 * @param parameterCount Number of parameters this argument requires
+	 * @return The argument constructor
+	 */
+	public Constructor asInteger(int parameterCount) {
+		return asInteger(parameterCount, parameterCount);
+	}
+
+	/**
+	 * Specifies that the argument takes {@code minParameterCount} to {@code maxParameterCount} number of parameters
+	 * of type string.
+	 *
+	 * @param minParameterCount Minimum number of parameters this argument requires
+	 * @param maxParameterCount Maximum number of parameters this argument accepts
+	 * @return The argument constructor
+	 */
+	public Constructor asInteger(int minParameterCount, int maxParameterCount) {
+		myArg.setType(new IntegerType(myParser, myArg, minParameterCount, maxParameterCount));
 		return this;
 	}
 
