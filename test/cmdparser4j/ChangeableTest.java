@@ -1,15 +1,12 @@
 // Copyright (c) 2016 Per Malmberg
 // Licensed under MIT, see LICENSE file.
 
-package com.codezeal.commandline;
+package cmdparser4j;
 
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-/**
- * Created by Per Malmberg on 2015-12-05.
- */
 public class ChangeableTest {
 
 	@Test

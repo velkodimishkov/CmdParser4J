@@ -1,11 +1,8 @@
 // Copyright (c) 2016 Per Malmberg
 // Licensed under MIT, see LICENSE file.
 
-package com.codezeal.commandline;
+package cmdparser4j;
 
-/**
- * Created by Per Malmberg on 2015-11-26.
- */
 public class Changeable<T> {
 	private T value;
 

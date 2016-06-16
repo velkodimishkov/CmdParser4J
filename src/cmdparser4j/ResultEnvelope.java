@@ -1,11 +1,11 @@
 // Copyright (c) 2016 Per Malmberg
 // Licensed under MIT, see LICENSE file.
 
-package com.codezeal.commandline;
+package cmdparser4j;
 
-import com.codezeal.commandline.envelopes.IBooleanTypeEnvelope;
-import com.codezeal.commandline.envelopes.IIntegerTypeEnvelope;
-import com.codezeal.commandline.envelopes.IStringTypeEnvelope;
+import cmdparser4j.envelopes.IIntegerTypeEnvelope;
+import cmdparser4j.envelopes.IStringTypeEnvelope;
+import cmdparser4j.envelopes.IBooleanTypeEnvelope;
 
 import java.util.HashMap;
 

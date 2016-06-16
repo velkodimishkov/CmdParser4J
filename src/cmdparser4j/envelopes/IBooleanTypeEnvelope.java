@@ -1,9 +1,9 @@
 // Copyright (c) 2016 Per Malmberg
 // Licensed under MIT, see LICENSE file.
 
-package com.codezeal.commandline.envelopes;
+package cmdparser4j.envelopes;
 
-import com.codezeal.commandline.BooleanType;
+import cmdparser4j.BooleanType;
 
 public interface IBooleanTypeEnvelope {
 	void add(String primaryName, BooleanType type);

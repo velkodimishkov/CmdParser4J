@@ -1,13 +1,10 @@
 // Copyright (c) 2016 Per Malmberg
 // Licensed under MIT, see LICENSE file.
 
-package com.codezeal.commandline;
+package cmdparser4j;
 
 import java.util.List;
 
-/**
- * Created by Per Malmberg on 2016-02-02.
- */
 public class SystemOutputUsageFormatter implements IUsageFormatter {
 	private StringBuilder sb = new StringBuilder();
 	private int indent;

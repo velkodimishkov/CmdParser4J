@@ -1,11 +1,8 @@
 // Copyright (c) 2016 Per Malmberg
 // Licensed under MIT, see LICENSE file.
 
-package com.codezeal.commandline;
+package cmdparser4j;
 
-/**
- * Created by Per Malmberg on 2016-01-30.
- */
 public class SystemOutputParseResult implements IParseResult {
 	private StringBuilder sb = new StringBuilder();
 

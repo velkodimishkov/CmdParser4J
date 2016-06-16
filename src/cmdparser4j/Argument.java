@@ -1,16 +1,13 @@
 // Copyright (c) 2016 Per Malmberg
 // Licensed under MIT, see LICENSE file.
 
-package com.codezeal.commandline;
+package cmdparser4j;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * Created by Per Malmberg on 2015-12-05.
- */
 class Argument {
 	private final ArrayList<String> myNames = new ArrayList<String>();
 	private final ArrayList<String> myDependencies = new ArrayList<String>();

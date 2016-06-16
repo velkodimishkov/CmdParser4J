@@ -1,7 +1,7 @@
 // Copyright (c) 2016 Per Malmberg
 // Licensed under MIT, see LICENSE file.
 
-package com.codezeal.commandline;
+package cmdparser4j;
 
 import java.util.*;
 
@@ -123,8 +123,8 @@ public class CmdParser4J {
 	}
 
 	/**
-	 * @param argumentIndexes
-	 * @param arguments
+	 * @param argumentIndexes Receiver of indexes
+	 * @param arguments The arguments to find.
 	 */
 	void GetIndexes(ArrayList<Map.Entry<Integer, Argument>> argumentIndexes, final ArrayList<String> arguments) {
 		Changeable<Integer> hit = new Changeable<Integer>(0);
