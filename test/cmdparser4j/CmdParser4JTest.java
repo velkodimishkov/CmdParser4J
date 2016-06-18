@@ -104,6 +104,14 @@ public class CmdParser4JTest {
 	}
 
 	@Test
+	public void testIntegerInvalidData() throws Exception {
+		IParseResult msg = new SystemOutputParseResult();
+		CmdParser4J p = new CmdParser4J(msg);
+		p.accept("-a").asInteger(1);
+		assertFalse(p.parse("-a", "AA"));
+	}
+
+	@Test
 	public void testFailedParse() throws Exception {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
@@ -306,6 +314,27 @@ public class CmdParser4JTest {
 		assertFalse(p.parse("-first", "-second"));
 		assertTrue(msg.getParseResult().contains("mutually exclusive"));
 		System.out.println(msg.getParseResult());
+	}
+
+	@Test
+	public void testBlockedByNoSuchDefined() throws Exception {
+		IParseResult msg = new SystemOutputParseResult();
+		CmdParser4J p = new CmdParser4J(msg);
+		p.accept("-first").blockedBy("-doesnotexist").asBoolean(0);
+		p.accept("-second").blockedBy("-first").asBoolean(0);
+		assertFalse(p.parse("-first", "-second"));
+		String error = msg.getParseResult();
+		assertTrue(error.contains("doesnotexist"));
+	}
+
+	@Test
+	public void testHiddenArgument() throws Exception {
+		IParseResult msg = new SystemOutputParseResult();
+		CmdParser4J p = new CmdParser4J(msg);
+		p.accept("first").asSingleBoolean().setHidden();
+		SystemOutputUsageFormatter usage = new SystemOutputUsageFormatter("test");
+		p.getUsage(usage);
+		assertFalse(usage.toString().contains("first"));
 	}
 
 	@Test
