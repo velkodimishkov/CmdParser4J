@@ -5,5 +5,6 @@ package cmdparser4j;
 
 public interface IConfigurationReader {
 	boolean fillFromConfiguration(Argument argument);
+	boolean loadFromFile( String pathToFile );
 }
 

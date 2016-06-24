@@ -15,6 +15,7 @@ import java.util.*;
 public class CmdParser4J {
 	private final HashMap<String, Argument> myArguments = new HashMap<String, Argument>();
 	private final IParseResult myResult;
+	private String myConfigurationfileNameArgument = null;
 
 	private final ResultEnvelope myResults = new ResultEnvelope();
 
@@ -52,12 +53,26 @@ public class CmdParser4J {
 	}
 
 	/**
+	 * Parses the command line, with fallback to configuration specified on the command line.
+	 * @param fileNameArgument The argument that specifies the path to the configuration file
+	 * @param cfg The configuration parser
+	 * @param args The arguments.
+	 * @return true on success, false on failure
+	 */
+	public boolean parse( String fileNameArgument, IConfigurationReader cfg, String... args) {
+		myConfigurationfileNameArgument = fileNameArgument;
+		ArrayList<String> a = new ArrayList<String>();
+		Collections.addAll(a, args);
+		return parse(a, cfg );
+	}
+
+	/**
 	 * Parses the command line
 	 *
 	 * @param args The arguments
 	 * @return true on success, false on failure
 	 */
-	private boolean parse(ArrayList<String> args, IConfigurationReader cfg) {
+	private boolean parse(ArrayList<String> args, IConfigurationReader cfg ) {
 
 		args = removeEmptyArguments(args);
 
@@ -107,10 +122,32 @@ public class CmdParser4J {
 				}
 			}
 
-			result &= fallbackToConfiguration(cfg);
-			result &= checkMandatory();
-			result &= checkDependencies();
-			result &= checkMutualExclusion();
+			result = result
+					&& loadConfigFile( cfg )
+					&& fallbackToConfiguration(cfg)
+					&& checkMandatory()
+					&& checkDependencies()
+					&& checkMutualExclusion();
+		}
+
+		return result;
+	}
+
+	private boolean loadConfigFile( IConfigurationReader cfg) {
+		boolean result = true;
+
+		if( myConfigurationfileNameArgument != null) {
+			String fileName = getString(myConfigurationfileNameArgument);
+			if( fileName == null ) {
+				myResult.failedToLoadConfiguration(myConfigurationfileNameArgument);
+			}
+			else {
+				result = cfg.loadFromFile( fileName );
+
+				if( !result ) {
+					myResult.failedToLoadConfiguration(myConfigurationfileNameArgument);
+				}
+			}
 		}
 
 		return result;

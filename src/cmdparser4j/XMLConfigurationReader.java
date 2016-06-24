@@ -12,6 +12,8 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -93,6 +95,10 @@ public class XMLConfigurationReader implements IConfigurationReader {
 		private String myMatchAttributeValue = "";
 	}
 
+	public XMLConfigurationReader() {
+
+	}
+
 	public XMLConfigurationReader(String xmlData) {
 		mySource = new InputSource(new StringReader(xmlData));
 	}
@@ -132,9 +138,42 @@ public class XMLConfigurationReader implements IConfigurationReader {
 		return res;
 	}
 
+	@Override
+	public boolean loadFromFile( String pathToFile )
+	{
+		boolean res = false;
+
+		FileInputStream input = null;
+
+		try {
+			File file = new File( pathToFile);
+			if( file.exists() ) {
+				input = new FileInputStream(pathToFile);
+				byte[] data = new byte[(int)file.length()];
+				input.read(data);
+				mySource = new InputSource( new StringReader(new String( data, "UTF-8") ) );
+				res = true;
+			}
+		}
+		catch (Exception ex )
+		{
+
+		}
+		finally {
+			if( input != null) {
+				try {
+					input.close();
+				}
+				catch (Exception ex) {}
+			}
+		}
+
+		return res;
+	}
+
 	private final HashMap<String, NodeMatcher> myMatcher = new HashMap<String, NodeMatcher>();
 	private final XPathFactory myXPathFactory = XPathFactory.newInstance();
-	private InputSource mySource;
+	private InputSource mySource = null;
 
 }
 

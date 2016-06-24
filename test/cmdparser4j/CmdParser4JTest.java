@@ -5,7 +5,8 @@ package cmdparser4j;
 
 import org.junit.Test;
 
-import java.util.ArrayList;
+import java.io.File;
+import java.io.FileOutputStream;
 
 import static org.junit.Assert.*;
 
@@ -425,14 +426,14 @@ public class CmdParser4JTest {
 				"<First><![CDATA[42]]></First>" +
 				"</Settings>";
 
-		XMLConfigurationReader cfg = new XMLConfigurationReader( cfgStr );
-		cfg.setMatcher( "-first", new XMLConfigurationReader.NodeMatcher( "/Settings/First" ) );
+		XMLConfigurationReader cfg = new XMLConfigurationReader(cfgStr);
+		cfg.setMatcher("-first", new XMLConfigurationReader.NodeMatcher("/Settings/First"));
 
-		assertTrue( p.parse( cfg ) );
+		assertTrue(p.parse(cfg));
 
-		assertTrue( p.getInteger( "-first" ) == 40 );
-		assertTrue( p.getInteger( "-first", 1 ) == 41 );
-		assertTrue( p.getInteger( "-first", 2 ) == 42 );
+		assertTrue(p.getInteger("-first") == 40);
+		assertTrue(p.getInteger("-first", 1) == 41);
+		assertTrue(p.getInteger("-first", 2) == 42);
 	}
 
 	@Test
@@ -442,19 +443,19 @@ public class CmdParser4JTest {
 		p.accept("-first").asInteger(3);
 
 		String cfgStr = "<Settings>" +
-							"<First Key=\"KeyName\" Value=\"1234\"/>" +
-							"<First Key=\"KeyName\" Value=\"5678\"/>" +
-							"<First Key=\"KeyName\" Value=\"9012\"/>" +
-						"</Settings>";
+				"<First Key=\"KeyName\" Value=\"1234\"/>" +
+				"<First Key=\"KeyName\" Value=\"5678\"/>" +
+				"<First Key=\"KeyName\" Value=\"9012\"/>" +
+				"</Settings>";
 
-		XMLConfigurationReader cfg = new XMLConfigurationReader( cfgStr );
-		cfg.setMatcher( "-first", new XMLConfigurationReader.NodeMatcher( "/Settings/First", "Value", "Key", "KeyName" ) );
+		XMLConfigurationReader cfg = new XMLConfigurationReader(cfgStr);
+		cfg.setMatcher("-first", new XMLConfigurationReader.NodeMatcher("/Settings/First", "Value", "Key", "KeyName"));
 
-		assertTrue( p.parse( cfg ) );
+		assertTrue(p.parse(cfg));
 
-		assertTrue( p.getInteger( "-first" ) == 1234 );
-		assertTrue( p.getInteger( "-first", 1 ) == 5678 );
-		assertTrue( p.getInteger( "-first", 2 ) == 9012 );
+		assertTrue(p.getInteger("-first") == 1234);
+		assertTrue(p.getInteger("-first", 1) == 5678);
+		assertTrue(p.getInteger("-first", 2) == 9012);
 	}
 
 	@Test
@@ -469,14 +470,14 @@ public class CmdParser4JTest {
 				"<First Key=\"KeyName\" Value=\"90\"/>" +
 				"</Settings>";
 
-		XMLConfigurationReader cfg = new XMLConfigurationReader( cfgStr );
-		cfg.setMatcher( "-first", new XMLConfigurationReader.NodeMatcher( "/Settings/First", "Value" ) );
+		XMLConfigurationReader cfg = new XMLConfigurationReader(cfgStr);
+		cfg.setMatcher("-first", new XMLConfigurationReader.NodeMatcher("/Settings/First", "Value"));
 
-		assertTrue( p.parse( cfg ) );
+		assertTrue(p.parse(cfg));
 
-		assertTrue( p.getInteger( "-first" ) == 70 );
-		assertTrue( p.getInteger( "-first", 1 ) == 80 );
-		assertTrue( p.getInteger( "-first", 2 ) == 90 );
+		assertTrue(p.getInteger("-first") == 70);
+		assertTrue(p.getInteger("-first", 1) == 80);
+		assertTrue(p.getInteger("-first", 2) == 90);
 	}
 
 	@Test
@@ -491,14 +492,14 @@ public class CmdParser4JTest {
 				"<First Key=\"KeyName\">300</First>" +
 				"</Settings>";
 
-		XMLConfigurationReader cfg = new XMLConfigurationReader( cfgStr );
-		cfg.setMatcher( "-first", new XMLConfigurationReader.NodeMatcher( "/Settings/First", "Key", "KeyName" ) );
+		XMLConfigurationReader cfg = new XMLConfigurationReader(cfgStr);
+		cfg.setMatcher("-first", new XMLConfigurationReader.NodeMatcher("/Settings/First", "Key", "KeyName"));
 
-		assertTrue( p.parse( cfg ) );
+		assertTrue(p.parse(cfg));
 
-		assertTrue( p.getInteger( "-first" ) == 100 );
-		assertTrue( p.getInteger( "-first", 1 ) == 200 );
-		assertTrue( p.getInteger( "-first", 2 ) == 300 );
+		assertTrue(p.getInteger("-first") == 100);
+		assertTrue(p.getInteger("-first", 1) == 200);
+		assertTrue(p.getInteger("-first", 2) == 300);
 	}
 
 	@Test
@@ -512,10 +513,10 @@ public class CmdParser4JTest {
 				"<First Key=\"KeyName\">56</First>" +
 				"</Settings>";
 
-		XMLConfigurationReader cfg = new XMLConfigurationReader( cfgStr );
-		cfg.setMatcher( "-first", new XMLConfigurationReader.NodeMatcher( "/Settings/First" ) );
+		XMLConfigurationReader cfg = new XMLConfigurationReader(cfgStr);
+		cfg.setMatcher("-first", new XMLConfigurationReader.NodeMatcher("/Settings/First"));
 
-		assertFalse( p.parse( cfg ) );
+		assertFalse(p.parse(cfg));
 	}
 
 	@Test
@@ -530,11 +531,108 @@ public class CmdParser4JTest {
 				"<First Key=\"KeyName\">57</First>" +
 				"</Settings>";
 
-		XMLConfigurationReader cfg = new XMLConfigurationReader( cfgStr );
-		cfg.setMatcher( "-first", new XMLConfigurationReader.NodeMatcher( "%#%&##%#" ) );
+		XMLConfigurationReader cfg = new XMLConfigurationReader(cfgStr);
+		cfg.setMatcher("-first", new XMLConfigurationReader.NodeMatcher("%#%&##%#"));
 
-		assertFalse( p.parse( cfg ) );
+		assertFalse(p.parse(cfg));
 	}
 
+	@Test
+	public void testReadConfigFromConfiguration_specified_on_commandline() throws Exception {
+		IParseResult msg = new SystemOutputParseResult();
+		CmdParser4J p = new CmdParser4J(msg);
+		p.accept("-first").asInteger(3);
+		p.accept("-config").asString(1).setMandatory();
+
+		String fileName = "config.xml";
+
+		String cfgStr = "<Settings>" +
+				"<First>88</First>" +
+				"<First>89</First>" +
+				"<First>90</First>" +
+				"</Settings>";
+
+		File f = new File(fileName);
+		if (f.exists()) {
+			f.delete();
+		}
+
+		FileOutputStream fs = new FileOutputStream(fileName);
+		fs.write(cfgStr.getBytes());
+		fs.close();
+
+		assertTrue(f.exists());
+
+		XMLConfigurationReader cfg = new XMLConfigurationReader();
+		cfg.setMatcher("-first", new XMLConfigurationReader.NodeMatcher("/Settings/First"));
+
+		assertTrue(p.parse("-config", cfg, "-config", fileName));
+
+		assertTrue(p.getInteger("-first") == 88);
+		assertTrue(p.getInteger("-first", 1) == 89);
+		assertTrue(p.getInteger("-first", 2) == 90);
+
+		if (f.exists()) {
+			f.delete();
+		}
+	}
+
+	@Test
+	public void testReadConfigFromConfiguration_config_file_missing() throws Exception {
+		IParseResult msg = new SystemOutputParseResult();
+		CmdParser4J p = new CmdParser4J(msg);
+		p.accept("-first").asInteger(3);
+		p.accept("-config").asString(1).setMandatory();
+
+		XMLConfigurationReader cfg = new XMLConfigurationReader();
+		cfg.setMatcher("-first", new XMLConfigurationReader.NodeMatcher("/Settings/First"));
+
+		assertFalse(p.parse("-config", cfg, "-config", "non-existingFile.xml"));
+		assertTrue(msg.getParseResult().contains("Could not load the configuration specified by argument"));
+	}
+
+	@Test
+	public void testReadConfigFromConfiguration_read_to_settings() throws Exception {
+		IParseResult msg = new SystemOutputParseResult();
+		CmdParser4J p = new CmdParser4J(msg);
+		p.accept("-first").asInteger(3);
+		p.accept("-second").asSingleBoolean();
+		p.accept("-config").asString(1).setMandatory();
+
+		String fileName = "config.xml";
+
+		String cfgStr = "<Settings>" +
+				"<First>88</First>" +
+				"<First>89</First>" +
+				"<First>90</First>" +
+				"<Second><Awesome>42</Awesome></Second>" +
+				"</Settings>";
+
+		File f = new File(fileName);
+		if (f.exists()) {
+			f.delete();
+		}
+
+		FileOutputStream fs = new FileOutputStream(fileName);
+		fs.write(cfgStr.getBytes());
+		fs.close();
+
+		assertTrue(f.exists());
+
+		XMLConfigurationReader cfg = new XMLConfigurationReader();
+		cfg.setMatcher("-first", new XMLConfigurationReader.NodeMatcher("/Settings/First"));
+		cfg.setMatcher("-second", new XMLConfigurationReader.NodeMatcher("/Settings/Second/Awesome"));
+
+		assertTrue(p.parse("-config", cfg, "-config", fileName, "-second"));
+
+		assertTrue(p.getInteger("-first") == 88);
+		assertTrue(p.getInteger("-first", 1) == 89);
+		assertTrue(p.getInteger("-first", 2) == 90);
+		assertTrue(p.getBool("-second") );
+
+		if (f.exists()) {
+			f.delete();
+		}
+	}
 
 }

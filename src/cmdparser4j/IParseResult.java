@@ -31,4 +31,6 @@ public interface IParseResult {
 	void failedToParseArgument(String argumentName);
 
 	void ArgumentMissingType(String primaryName);
+
+	void failedToLoadConfiguration(String fileNameArgument);
 }

@@ -61,6 +61,12 @@ public class SystemOutputParseResult implements IParseResult {
 		appendLine("'" + primaryName + "' is missing type information. This is a programming error - contact the author of the application");
 	}
 
+	@Override
+	public void failedToLoadConfiguration(String fileNameArgument)
+	{
+		appendLine("Could not load the configuration specified by argument '" + fileNameArgument + "'");
+	}
+
 	void appendLine(String format, Object... arguments) {
 		String msg = String.format(format, arguments);
 		sb.append(String.format("%s%n", msg)); // %n => newline
