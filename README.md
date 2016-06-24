@@ -12,12 +12,19 @@
   * Guard against unknown arguments.
 * Custom "usage" formatting.
 * Custom error messages.
+* Configuration file integration - when arguments are not available on the
+command line they can be read from a configuration file. An XML-reader is included,
+supporting three different modes:
+  * Matching only node name and reading a primary attribute.
+  * Matching only node name and reading the 'text value' of the node.
+  * Matching on node name and reading a primary attribute.
+  * Matching on node name and attribute name/value, reading a second attribute value.
 
-## Portes
+## Ports
 A C++ port is available here: https://github.com/PerMalmberg/CmdParser4Cpp
 
 ## Usage
-This example is taken from the test cases.
+This example is taken from the test cases. Please see the test cases for more detailed usage.
 
 ```Java
 IParseResult msg = new SystemOutputParseResult();
