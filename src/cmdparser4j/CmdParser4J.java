@@ -36,7 +36,19 @@ public class CmdParser4J {
 	public boolean parse(String... args) {
 		ArrayList<String> a = new ArrayList<String>();
 		Collections.addAll(a, args);
-		return parse(a);
+		return parse(a, null);
+	}
+
+	/**
+	 * Parses the command line, with fallback to the provided configuration
+	 *
+	 * @param args The arguments
+	 * @return true on success, false on failure
+	 */
+	public boolean parse(IConfigurationReader cfg, String... args) {
+		ArrayList<String> a = new ArrayList<String>();
+		Collections.addAll(a, args);
+		return parse(a, cfg);
 	}
 
 	/**
@@ -45,7 +57,7 @@ public class CmdParser4J {
 	 * @param args The arguments
 	 * @return true on success, false on failure
 	 */
-	private boolean parse(ArrayList<String> args) {
+	private boolean parse(ArrayList<String> args, IConfigurationReader cfg) {
 
 		args = removeEmptyArguments(args);
 
@@ -95,6 +107,7 @@ public class CmdParser4J {
 				}
 			}
 
+			result &= fallbackToConfiguration(cfg);
 			result &= checkMandatory();
 			result &= checkDependencies();
 			result &= checkMutualExclusion();
@@ -124,7 +137,7 @@ public class CmdParser4J {
 
 	/**
 	 * @param argumentIndexes Receiver of indexes
-	 * @param arguments The arguments to find.
+	 * @param arguments       The arguments to find.
 	 */
 	void GetIndexes(ArrayList<Map.Entry<Integer, Argument>> argumentIndexes, final ArrayList<String> arguments) {
 		Changeable<Integer> hit = new Changeable<Integer>(0);
@@ -209,6 +222,22 @@ public class CmdParser4J {
 			}
 		}
 		return result;
+	}
+
+	private boolean fallbackToConfiguration(IConfigurationReader cfgReader) {
+		boolean res = true;
+
+		// Let each argument that has not already been successfully parsed based on the
+		// command line attempt a fallback to the configuration
+		if (cfgReader != null) {
+			for( Argument a : myArguments.values() ) {
+				if (!a.isSuccessFullyParsed()) {
+					res &= cfgReader.fillFromConfiguration(a);
+				}
+			}
+		}
+
+		return res;
 	}
 
 	/**

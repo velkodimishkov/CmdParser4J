@@ -5,6 +5,8 @@ package cmdparser4j;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
+
 import static org.junit.Assert.*;
 
 public class CmdParser4JTest {
@@ -410,5 +412,129 @@ public class CmdParser4JTest {
 		String s = msg.getParseResult();
 		assert (s.contains("jada"));
 	}
+
+	@Test
+	public void testReadConfigFromConfiguration_textformat() throws Exception {
+		IParseResult msg = new SystemOutputParseResult();
+		CmdParser4J p = new CmdParser4J(msg);
+		p.accept("-first").asInteger(3);
+
+		String cfgStr = "<Settings>" +
+				"<First><![CDATA[40]]></First>" +
+				"<First>41</First>" +
+				"<First><![CDATA[42]]></First>" +
+				"</Settings>";
+
+		XMLConfigurationReader cfg = new XMLConfigurationReader( cfgStr );
+		cfg.setMatcher( "-first", new XMLConfigurationReader.NodeMatcher( "/Settings/First" ) );
+
+		assertTrue( p.parse( cfg ) );
+
+		assertTrue( p.getInteger( "-first" ) == 40 );
+		assertTrue( p.getInteger( "-first", 1 ) == 41 );
+		assertTrue( p.getInteger( "-first", 2 ) == 42 );
+	}
+
+	@Test
+	public void testReadConfigFromConfiguration_read_attribute_via_name_value_pair() throws Exception {
+		IParseResult msg = new SystemOutputParseResult();
+		CmdParser4J p = new CmdParser4J(msg);
+		p.accept("-first").asInteger(3);
+
+		String cfgStr = "<Settings>" +
+							"<First Key=\"KeyName\" Value=\"1234\"/>" +
+							"<First Key=\"KeyName\" Value=\"5678\"/>" +
+							"<First Key=\"KeyName\" Value=\"9012\"/>" +
+						"</Settings>";
+
+		XMLConfigurationReader cfg = new XMLConfigurationReader( cfgStr );
+		cfg.setMatcher( "-first", new XMLConfigurationReader.NodeMatcher( "/Settings/First", "Value", "Key", "KeyName" ) );
+
+		assertTrue( p.parse( cfg ) );
+
+		assertTrue( p.getInteger( "-first" ) == 1234 );
+		assertTrue( p.getInteger( "-first", 1 ) == 5678 );
+		assertTrue( p.getInteger( "-first", 2 ) == 9012 );
+	}
+
+	@Test
+	public void testReadConfigFromConfiguration_read_attribute_don_not_care_about_matching_name_value_pair() throws Exception {
+		IParseResult msg = new SystemOutputParseResult();
+		CmdParser4J p = new CmdParser4J(msg);
+		p.accept("-first").asInteger(3);
+
+		String cfgStr = "<Settings>" +
+				"<First Key=\"KeyName\" Value=\"70\"/>" +
+				"<First Key=\"KeyName\" Value=\"80\"/>" +
+				"<First Key=\"KeyName\" Value=\"90\"/>" +
+				"</Settings>";
+
+		XMLConfigurationReader cfg = new XMLConfigurationReader( cfgStr );
+		cfg.setMatcher( "-first", new XMLConfigurationReader.NodeMatcher( "/Settings/First", "Value" ) );
+
+		assertTrue( p.parse( cfg ) );
+
+		assertTrue( p.getInteger( "-first" ) == 70 );
+		assertTrue( p.getInteger( "-first", 1 ) == 80 );
+		assertTrue( p.getInteger( "-first", 2 ) == 90 );
+	}
+
+	@Test
+	public void testReadConfigFromConfiguration_read_text_data_via_name_value_pair() throws Exception {
+		IParseResult msg = new SystemOutputParseResult();
+		CmdParser4J p = new CmdParser4J(msg);
+		p.accept("-first").asInteger(3);
+
+		String cfgStr = "<Settings>" +
+				"<First Key=\"KeyName\">100</First>" +
+				"<First Key=\"KeyName\">200</First>" +
+				"<First Key=\"KeyName\">300</First>" +
+				"</Settings>";
+
+		XMLConfigurationReader cfg = new XMLConfigurationReader( cfgStr );
+		cfg.setMatcher( "-first", new XMLConfigurationReader.NodeMatcher( "/Settings/First", "Key", "KeyName" ) );
+
+		assertTrue( p.parse( cfg ) );
+
+		assertTrue( p.getInteger( "-first" ) == 100 );
+		assertTrue( p.getInteger( "-first", 1 ) == 200 );
+		assertTrue( p.getInteger( "-first", 2 ) == 300 );
+	}
+
+	@Test
+	public void testReadConfigFromConfiguration_config_file_is_missing_entries() throws Exception {
+		IParseResult msg = new SystemOutputParseResult();
+		CmdParser4J p = new CmdParser4J(msg);
+		p.accept("-first").asInteger(3);
+
+		String cfgStr = "<Settings>" +
+				"<First Key=\"KeyName\">55</First>" +
+				"<First Key=\"KeyName\">56</First>" +
+				"</Settings>";
+
+		XMLConfigurationReader cfg = new XMLConfigurationReader( cfgStr );
+		cfg.setMatcher( "-first", new XMLConfigurationReader.NodeMatcher( "/Settings/First" ) );
+
+		assertFalse( p.parse( cfg ) );
+	}
+
+	@Test
+	public void testReadConfigFromConfiguration_invalid_xpath() throws Exception {
+		IParseResult msg = new SystemOutputParseResult();
+		CmdParser4J p = new CmdParser4J(msg);
+		p.accept("-first").asInteger(3);
+
+		String cfgStr = "<Settings>" +
+				"<First Key=\"KeyName\">55</First>" +
+				"<First Key=\"KeyName\">56</First>" +
+				"<First Key=\"KeyName\">57</First>" +
+				"</Settings>";
+
+		XMLConfigurationReader cfg = new XMLConfigurationReader( cfgStr );
+		cfg.setMatcher( "-first", new XMLConfigurationReader.NodeMatcher( "%#%&##%#" ) );
+
+		assertFalse( p.parse( cfg ) );
+	}
+
 
 }
