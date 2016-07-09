@@ -17,7 +17,7 @@ class Argument {
 	private BaseType myType = null;
 	private String myDescription = "";
 	private IParseResult myResult;
-	private boolean isHidden = false;
+	private boolean myIsHidden = false;
 
 
 	public Argument(String argumentName, IParseResult result) {
@@ -79,11 +79,11 @@ class Argument {
 	}
 
 	void setHidden() {
-		isHidden = true;
+		myIsHidden = true;
 	}
 
 	boolean isHidden() {
-		return isHidden;
+		return myIsHidden;
 	}
 
 	String getPrimaryName() {
