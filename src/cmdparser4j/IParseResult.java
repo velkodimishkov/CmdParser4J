@@ -3,7 +3,8 @@
 
 package cmdparser4j;
 
-import java.util.ArrayList;
+import cmdparser4j.limits.NumericLimit;
+import cmdparser4j.limits.StringLengthLimit;
 
 /**
  * Interface used by the parser to notify the application of parse errors/events.
@@ -30,7 +31,11 @@ public interface IParseResult {
 
 	void failedToParseArgument(String argumentName);
 
-	void ArgumentMissingType(String primaryName);
+	void argumentMissingType(String primaryName);
 
 	void failedToLoadConfiguration(String fileNameArgument);
+
+	void outsideLimits(String primaryName, NumericLimit tNumericLimit);
+
+	void outsideLimits(String primaryName, StringLengthLimit tNumericLimit);
 }

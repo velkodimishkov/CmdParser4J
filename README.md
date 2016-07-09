@@ -10,6 +10,7 @@
 * Constraint validation
   * Same argument not allowed twice
   * Guard against unknown arguments.
+  * Max/min values/lengths for argument parameters.
 * Custom "usage" formatting.
 * Custom error messages.
 * Configuration file integration

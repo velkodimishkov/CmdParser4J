@@ -3,6 +3,9 @@
 
 package cmdparser4j;
 
+import cmdparser4j.limits.NumericLimit;
+import cmdparser4j.limits.StringLengthLimit;
+
 public class SystemOutputParseResult implements IParseResult {
 	private StringBuilder sb = new StringBuilder();
 
@@ -57,7 +60,7 @@ public class SystemOutputParseResult implements IParseResult {
 	}
 
 	@Override
-	public void ArgumentMissingType(String primaryName) {
+	public void argumentMissingType(String primaryName) {
 		appendLine("'" + primaryName + "' is missing type information. This is a programming error - contact the author of the application");
 	}
 
@@ -65,6 +68,16 @@ public class SystemOutputParseResult implements IParseResult {
 	public void failedToLoadConfiguration(String fileNameArgument)
 	{
 		appendLine("Could not load the configuration specified by argument '" + fileNameArgument + "'");
+	}
+
+	@Override
+	public void outsideLimits(String primaryName, NumericLimit limit) {
+		appendLine("Parameter for argument '" + primaryName + "' is outside allowed limits of " + limit.getLower().toString() + " - " + limit.getUpper().toString() );
+	}
+
+	@Override
+	public void outsideLimits(String primaryName, StringLengthLimit limit) {
+		appendLine("Parameter for argument '" + primaryName + "' is outside allowed lengths of " + limit.getLower().toString() + " - " + limit.getUpper().toString() );
 	}
 
 	void appendLine(String format, Object... arguments) {

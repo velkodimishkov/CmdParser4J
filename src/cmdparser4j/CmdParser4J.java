@@ -165,7 +165,7 @@ public class CmdParser4J {
 		for (Argument a : myArguments.values()) {
 			if (!a.hasArgumentType()) {
 				res = false;
-				myResult.ArgumentMissingType(a.getPrimaryName());
+				myResult.argumentMissingType(a.getPrimaryName());
 			}
 		}
 
@@ -298,10 +298,10 @@ public class CmdParser4J {
 	 * @param argumentName The argument name.
 	 * @return A {@code Constructor} object
 	 */
-	public Constructor accept(String argumentName) {
+	public TypeConstructor accept(String argumentName) {
 		Argument a = new Argument(argumentName, myResult);
 		myArguments.put(a.getPrimaryName(), a);
-		return new Constructor(a, this);
+		return new TypeConstructor(a, this);
 	}
 
 	void setResult(String primaryName, StringType result) {

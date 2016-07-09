@@ -3,6 +3,8 @@
 
 package cmdparser4j;
 
+import cmdparser4j.limits.NumericLimit;
+import cmdparser4j.limits.StringLengthLimit;
 import org.junit.Test;
 
 import java.io.File;
@@ -74,7 +76,7 @@ public class CmdParser4JTest {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("/b").asBoolean(4);
-		p.accept("/bar").withAlias("/foo").asBoolean(1);
+		p.accept("/bar").asBoolean(1).withAlias("/foo");
 		assertTrue(p.parse("/b", "true", "1", "0", "false", "/foo", "false"));
 		assertTrue(p.getBool("/b", 0));
 		assertTrue(p.getBool("/b", 1));
@@ -254,7 +256,7 @@ public class CmdParser4JTest {
 	public void testDependsOnMissing() throws Exception {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
-		p.accept("-first").dependsOn("-second").asBoolean(1);
+		p.accept("-first").asBoolean(1).dependsOn("-second");
 		p.accept("-second").asBoolean(1);
 		assertFalse(p.parse("-first", "false"));
 		assertTrue(msg.getParseResult().contains("Argument '-first' depends on '-second', but the latter is missing"));
@@ -264,7 +266,7 @@ public class CmdParser4JTest {
 	public void testDependsOnOk() throws Exception {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
-		p.accept("-first").dependsOn("-second").asBoolean(1);
+		p.accept("-first").asBoolean(1).dependsOn("-second");
 		p.accept("-second").asBoolean(1);
 		assertTrue(p.parse("-first", "false", "-second", "true"));
 		assertEquals("", msg.getParseResult());
@@ -274,8 +276,8 @@ public class CmdParser4JTest {
 	public void testDependsTwoWay() throws Exception {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
-		p.accept("-first").dependsOn("-second").asBoolean(1);
-		p.accept("-second").dependsOn("-first").asBoolean(1);
+		p.accept("-first").asBoolean(1).dependsOn("-second");
+		p.accept("-second").asBoolean(1).dependsOn("-first");
 		assertTrue(p.parse("-first", "false", "-second", "true"));
 		assertEquals("", msg.getParseResult());
 	}
@@ -284,8 +286,8 @@ public class CmdParser4JTest {
 	public void testDependsTwoWayFail() throws Exception {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
-		p.accept("-first").dependsOn("-second").asBoolean(1);
-		p.accept("-second").dependsOn("-first").asBoolean(1);
+		p.accept("-first").asBoolean(1).dependsOn("-second");
+		p.accept("-second").asBoolean(1).dependsOn("-first");
 		assertFalse(p.parse("-second", "true"));
 		assertTrue(msg.getParseResult().contains("Argument '-second' depends on '-first', but the latter is missing"));
 	}
@@ -294,7 +296,7 @@ public class CmdParser4JTest {
 	public void testDependsOnProgrammingError() throws Exception {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
-		p.accept("-first").dependsOn("-second").asBoolean(1);
+		p.accept("-first").asBoolean(1).dependsOn("-second");
 		assertFalse(p.parse("-first", "false"));
 		assertTrue(msg.getParseResult().contains("Argument '-first' depends on '-second', but no such argument is defined - contact the author of the application"));
 	}
@@ -303,8 +305,8 @@ public class CmdParser4JTest {
 	public void testBlockedByOK() throws Exception {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
-		p.accept("-first").blockedBy("-second").asSingleBoolean();
-		p.accept("-second").blockedBy("-first").asSingleBoolean();
+		p.accept("-first").asSingleBoolean().blockedBy("-second");
+		p.accept("-second").asSingleBoolean().blockedBy("-first");
 		assertTrue(p.parse("-first"));
 	}
 
@@ -312,8 +314,8 @@ public class CmdParser4JTest {
 	public void testBlockedByFAIL() throws Exception {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
-		p.accept("-first").blockedBy("-second").asSingleBoolean();
-		p.accept("-second").blockedBy("-first").asSingleBoolean();
+		p.accept("-first").asSingleBoolean().blockedBy("-second");
+		p.accept("-second").asSingleBoolean().blockedBy("-first");
 		assertFalse(p.parse("-first", "-second"));
 		assertTrue(msg.getParseResult().contains("mutually exclusive"));
 		System.out.println(msg.getParseResult());
@@ -323,8 +325,8 @@ public class CmdParser4JTest {
 	public void testBlockedByNoSuchDefined() throws Exception {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
-		p.accept("-first").blockedBy("-doesnotexist").asBoolean(0);
-		p.accept("-second").blockedBy("-first").asBoolean(0);
+		p.accept("-first").asBoolean(0).blockedBy("-doesnotexist");
+		p.accept("-second").asBoolean(0).blockedBy("-first");
 		assertFalse(p.parse("-first", "-second"));
 		String error = msg.getParseResult();
 		assertTrue(error.contains("doesnotexist"));
@@ -347,7 +349,7 @@ public class CmdParser4JTest {
 		p.accept("-argument").asBoolean(1).setMandatory().describedAs("An argument that accept a single boolean parameter");
 		p.accept("-multi").asString(1, 4).describedAs("An optional argument that accept one to four argument.");
 		// The name of the argument, or any prefix characters, doesn't really matter, here we use double dash.
-		p.accept("--otherArgument").withAlias("-o", "-O").asSingleBoolean().describedAs("An optional argument that takes no parameters");
+		p.accept("--otherArgument").asSingleBoolean().withAlias("-o", "-O").describedAs("An optional argument that takes no parameters");
 		// Arguments with variable parameters are only accepted as the last argument on the commandline.
 		assertTrue(p.parse("-argument", "true", "-O", "-multi", "parameter1", "parameter2", "parameter3"));
 		// Verify the number of parameters that can be read for the different arguments.
@@ -386,7 +388,7 @@ public class CmdParser4JTest {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 
-		p.accept("-first").describedAs("The first");
+		p.accept("-first");
 		assertFalse(p.parse("-first"));
 		String s = msg.getParseResult();
 		assert (s.contains("is missing type information"));
@@ -628,10 +630,68 @@ public class CmdParser4JTest {
 		assertTrue(p.getInteger("-first") == 88);
 		assertTrue(p.getInteger("-first", 1) == 89);
 		assertTrue(p.getInteger("-first", 2) == 90);
-		assertTrue(p.getBool("-second") );
+		assertTrue(p.getBool("-second"));
 
 		if (f.exists()) {
 			f.delete();
+		}
+	}
+
+	@Test
+	public void testIntegerLimitsOk() throws Exception {
+		IParseResult msg = new SystemOutputParseResult();
+		for (Integer i = 4; i < 6; ++i) {
+			CmdParser4J p = new CmdParser4J(msg);
+			p.accept("--first").asInteger(1, new NumericLimit<Integer>(4, 5));
+			assertTrue(p.parse("--first", i.toString()));
+		}
+	}
+
+	@Test
+	public void testIntegerLimitsFail() throws Exception {
+		IParseResult msg = new SystemOutputParseResult();
+		for (Integer i = 1; i < 4; ++i) {
+			CmdParser4J p = new CmdParser4J(msg);
+			p.accept("--first").asInteger(1, new NumericLimit<Integer>(4, 5));
+			assertFalse(p.parse("--first", i.toString()));
+			assertTrue(msg.getParseResult().contains("is outside allowed limits of"));
+
+		}
+
+		for (Integer i = 6; i < 9; ++i) {
+			CmdParser4J p = new CmdParser4J(msg);
+			p.accept("--first").asInteger(1, new NumericLimit<Integer>(4, 5));
+			assertFalse(p.parse("--first", i.toString()));
+			assertTrue(msg.getParseResult().contains("is outside allowed limits of"));
+		}
+	}
+
+	@Test
+	public void testIStringLimitsOk() throws Exception {
+		IParseResult msg = new SystemOutputParseResult();
+		for (Integer i = 4; i < 6; ++i) {
+			CmdParser4J p = new CmdParser4J(msg);
+			p.accept("--first").asString(1, new StringLengthLimit(4, 5));
+			assertTrue(p.parse("--first", new String(new char[i]).replace("\0", "A")));
+		}
+	}
+
+	@Test
+	public void testStringLimitsFail() throws Exception {
+		IParseResult msg = new SystemOutputParseResult();
+		for (Integer i = 1; i < 4; ++i) {
+			CmdParser4J p = new CmdParser4J(msg);
+			p.accept("--first").asString(1, new StringLengthLimit(4, 5));
+			assertFalse(p.parse("--first",  new String( new char[i] ).replace("\0", "A")));
+			assertTrue(msg.getParseResult().contains("is outside allowed lengths of 4 - 5"));
+
+		}
+
+		for (Integer i = 6; i < 9; ++i) {
+			CmdParser4J p = new CmdParser4J(msg);
+			p.accept("--first").asString(1, new StringLengthLimit(4, 5));
+			assertFalse(p.parse("--first",  new String( new char[i] ).replace("\0", "A")));
+			assertTrue(msg.getParseResult().contains("is outside allowed lengths of 4 - 5"));
 		}
 	}
 

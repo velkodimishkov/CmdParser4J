@@ -5,12 +5,10 @@ package cmdparser4j;
 
 public class Constructor {
 	private final Argument myArg;
-	private final CmdParser4J myParser;
 	public static final int NO_PARAMETER_LIMIT = Integer.MAX_VALUE;
 
-	public Constructor(Argument argument, CmdParser4J parser) {
+	public Constructor(Argument argument) {
 		myArg = argument;
-		myParser = parser;
 	}
 
 	/**
@@ -34,93 +32,17 @@ public class Constructor {
 		return this;
 	}
 
+	/**
+	 * Sets the description for the parameter
+	 * @param description The description
+	 * @return The argument constructor
+	 */
 	public Constructor describedAs(String description) {
 		myArg.setDescription(description);
 		return this;
 	}
 
-	/**
-	 * Specifies that the argument takes {@code parameterCount} number of parameters
-	 * of type boolean.
-	 *
-	 * @param parameterCount Number of parameters this argument requires
-	 * @return The argument constructor
-	 */
-	public Constructor asBoolean(int parameterCount) {
-		return asBoolean(parameterCount, parameterCount);
-	}
 
-	/**
-	 * Specifies that the argument takes {@code minParameterCount} to {@code maxParameterCount} number of parameters
-	 * of type boolean.
-	 *
-	 * @param minParameterCount Minimum number of parameters this argument requires
-	 * @param maxParameterCount Maximum number of parameters this argument accepts
-	 * @return The argument constructor
-	 */
-	public Constructor asBoolean(int minParameterCount, int maxParameterCount) {
-		myArg.setType(new BooleanType(myParser, myArg, minParameterCount, maxParameterCount));
-		return this;
-	}
-
-	/**
-	 * Specifies that the argument takes {@code minParameterCount} to {@code maxParameterCount} number of parameters
-	 * of type single boolean.
-	 *
-	 * @return The argument constructor
-	 */
-	public Constructor asSingleBoolean() {
-		myArg.setType(new SingleBooleanType(myParser, myArg));
-		return this;
-	}
-
-	/**
-	 * Specifies that the argument takes {@code parameterCount} number of parameters
-	 * of type string.
-	 *
-	 * @param parameterCount Number of parameters this argument requires
-	 * @return The argument constructor
-	 */
-	public Constructor asString(int parameterCount) {
-		return asString(parameterCount, parameterCount);
-	}
-
-	/**
-	 * Specifies that the argument takes {@code minParameterCount} to {@code maxParameterCount} number of parameters
-	 * of type string.
-	 *
-	 * @param minParameterCount Minimum number of parameters this argument requires
-	 * @param maxParameterCount Maximum number of parameters this argument accepts
-	 * @return The argument constructor
-	 */
-	public Constructor asString(int minParameterCount, int maxParameterCount) {
-		myArg.setType(new StringType(myParser, myArg, minParameterCount, maxParameterCount));
-		return this;
-	}
-
-	/**
-	 * Specifies that the argument takes {@code parameterCount} number of parameters
-	 * of type string.
-	 *
-	 * @param parameterCount Number of parameters this argument requires
-	 * @return The argument constructor
-	 */
-	public Constructor asInteger(int parameterCount) {
-		return asInteger(parameterCount, parameterCount);
-	}
-
-	/**
-	 * Specifies that the argument takes {@code minParameterCount} to {@code maxParameterCount} number of parameters
-	 * of type string.
-	 *
-	 * @param minParameterCount Minimum number of parameters this argument requires
-	 * @param maxParameterCount Maximum number of parameters this argument accepts
-	 * @return The argument constructor
-	 */
-	public Constructor asInteger(int minParameterCount, int maxParameterCount) {
-		myArg.setType(new IntegerType(myParser, myArg, minParameterCount, maxParameterCount));
-		return this;
-	}
 
 	/**
 	 * Specifies a dependency on another argument
@@ -143,6 +65,10 @@ public class Constructor {
 		return this;
 	}
 
+	/**
+	 * Hides the argument from usage output.
+	 * @return The argument constructor
+	 */
 	public Constructor setHidden(){
 		myArg.setHidden();
 		return this;

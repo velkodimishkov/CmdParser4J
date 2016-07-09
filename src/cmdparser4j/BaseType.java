@@ -3,23 +3,27 @@
 
 package cmdparser4j;
 
+import cmdparser4j.limits.NumericLimit;
+
 import java.util.ArrayList;
 import java.util.List;
 
-abstract class BaseType<T> {
+abstract class BaseType<T, RangeType> {
 	private final int myMinParameterCount;
 	private final int myMaxParameterCount;
 	private final IParseResult myResult;
 	protected final Argument myArgument;
 	protected final CmdParser4J myParser;
 	protected final ArrayList<T> myResults = new ArrayList<T>();
+	protected NumericLimit<RangeType> myLimit;
 
-	public BaseType(CmdParser4J parser, Argument argument, int minParameterCount, int maxParameterCount) {
+	public BaseType(CmdParser4J parser, Argument argument, int minParameterCount, int maxParameterCount, NumericLimit<RangeType> limit) {
 		myParser = parser;
 		myResult = parser.getMessageParser();
 		myArgument = argument;
 		myMinParameterCount = minParameterCount;
 		myMaxParameterCount = maxParameterCount;
+		myLimit = limit;
 	}
 
 	public int getAvailableParameterCount() {
@@ -50,7 +54,8 @@ abstract class BaseType<T> {
 			myResult.notEnoughParameters(argumentName, myMinParameterCount);
 		}
 
-		res = isSuccessFullyParsed();
+		res = res && checkLimits()
+				&& isSuccessFullyParsed();
 
 		if (res) {
 			retrieveResult(myParser);
@@ -60,6 +65,13 @@ abstract class BaseType<T> {
 
 		return res;
 	}
+
+	/**
+	 * Performs a range check on the parsed parameters
+	 * @return true if limits are ok, false if not.
+	 */
+	protected abstract boolean checkLimits();
+
 
 	/**
 	 * Indicates if the parser is satisfied with the parse.
