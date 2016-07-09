@@ -3,8 +3,8 @@
 
 package cmdparser4j.limits;
 
-public class UnboundedIntegerLimit extends NumericLimit<Integer> {
-	public UnboundedIntegerLimit() {
+public class UnboundIntegerLimit extends NumericLimit<Integer> {
+	public UnboundIntegerLimit() {
 		super(Integer.MIN_VALUE, Integer.MAX_VALUE);
 	}
 }

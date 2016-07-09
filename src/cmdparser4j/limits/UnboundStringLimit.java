@@ -3,9 +3,9 @@
 
 package cmdparser4j.limits;
 
-public class UnboundedStringLimit extends StringLengthLimit {
+public class UnboundStringLimit extends StringLengthLimit {
 
-	public UnboundedStringLimit() {
+	public UnboundStringLimit() {
 		super(1, Integer.MAX_VALUE);
 	}
 }

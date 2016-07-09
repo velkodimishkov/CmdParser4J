@@ -5,8 +5,8 @@ package cmdparser4j;
 
 import cmdparser4j.limits.NumericLimit;
 import cmdparser4j.limits.StringLengthLimit;
-import cmdparser4j.limits.UnboundedIntegerLimit;
-import cmdparser4j.limits.UnboundedStringLimit;
+import cmdparser4j.limits.UnboundIntegerLimit;
+import cmdparser4j.limits.UnboundStringLimit;
 
 public class TypeConstructor {
 	private final Argument myArg;
@@ -60,7 +60,7 @@ public class TypeConstructor {
 	 * @return The argument constructor
 	 */
 	public Constructor asString(int parameterCount) {
-		return asString(parameterCount, parameterCount, new UnboundedStringLimit());
+		return asString(parameterCount, parameterCount, new UnboundStringLimit());
 	}
 
 	/**
@@ -84,7 +84,7 @@ public class TypeConstructor {
 	 * @return The argument constructor
 	 */
 	public Constructor asString(int minParameterCount, int maxParameterCount) {
-		return asString(minParameterCount, maxParameterCount, new UnboundedStringLimit());
+		return asString(minParameterCount, maxParameterCount, new UnboundStringLimit());
 	}
 
 	/**
@@ -109,7 +109,7 @@ public class TypeConstructor {
 	 * @return The argument constructor
 	 */
 	public Constructor asInteger(int parameterCount) {
-		return asInteger(parameterCount, parameterCount, new UnboundedIntegerLimit());
+		return asInteger(parameterCount, parameterCount, new UnboundIntegerLimit());
 	}
 
 	/**
