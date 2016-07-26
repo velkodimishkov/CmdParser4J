@@ -91,7 +91,7 @@ class Argument {
 	}
 
 	List<String> getAliases() {
-		return myNames.subList(myNames.size() - 1 >= 1 ? 1 : 0, myNames.size() - 1);
+		return myNames.subList(myNames.size() - 1 >= 1 ? 1 : 0, myNames.size() );
 	}
 
 	void addAliases(String[] aliases) {

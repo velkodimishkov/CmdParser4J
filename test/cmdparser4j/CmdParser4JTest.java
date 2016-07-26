@@ -173,6 +173,11 @@ public class CmdParser4JTest {
 
 		SystemOutputUsageFormatter usage = new SystemOutputUsageFormatter("application name");
 		p.getUsage(usage);
+
+		assertTrue( usage.toString().contains("/B") );
+		assertTrue( usage.toString().contains("-B") );
+		assertTrue( usage.toString().contains("-b") );
+
 		System.out.println(usage);
 	}
 
@@ -682,7 +687,7 @@ public class CmdParser4JTest {
 		for (Integer i = 1; i < 4; ++i) {
 			CmdParser4J p = new CmdParser4J(msg);
 			p.accept("--first").asString(1, new StringLengthLimit(4, 5));
-			assertFalse(p.parse("--first",  new String( new char[i] ).replace("\0", "A")));
+			assertFalse(p.parse("--first", new String(new char[i]).replace("\0", "A")));
 			assertTrue(msg.getParseResult().contains("is outside allowed lengths of 4 - 5"));
 
 		}
@@ -690,7 +695,7 @@ public class CmdParser4JTest {
 		for (Integer i = 6; i < 9; ++i) {
 			CmdParser4J p = new CmdParser4J(msg);
 			p.accept("--first").asString(1, new StringLengthLimit(4, 5));
-			assertFalse(p.parse("--first",  new String( new char[i] ).replace("\0", "A")));
+			assertFalse(p.parse("--first", new String(new char[i]).replace("\0", "A")));
 			assertTrue(msg.getParseResult().contains("is outside allowed lengths of 4 - 5"));
 		}
 	}
