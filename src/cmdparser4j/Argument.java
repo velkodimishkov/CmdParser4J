@@ -91,7 +91,8 @@ class Argument {
 	}
 
 	List<String> getAliases() {
-		return myNames.subList(myNames.size() - 1 >= 1 ? 1 : 0, myNames.size() );
+		// If from > to, then an empty list is returned. That is what we want (first item is the primary name)
+		return myNames.subList( 1, myNames.size() );
 	}
 
 	void addAliases(String[] aliases) {
