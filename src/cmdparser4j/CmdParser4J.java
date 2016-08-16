@@ -422,14 +422,14 @@ public class CmdParser4J {
 		// Print mandatory
 		for (Argument a : myArguments.values()) {
 			if (a.isMandatory() && !a.isHidden()) {
-				usage.prepareMandatory(a.getPrimaryName(), a.hasVariableParameterCount(), a.getMaxArgumentCount(), a.getAliases(), a.getDescription());
+				usage.prepareMandatory(a.getPrimaryName(), a.hasVariableParameterCount(), a.getMaxArgumentCount(), a.getAliases(), a.getDependencyNames(), a.getDescription());
 			}
 		}
 
 		// Print non mandatory
 		for (Argument a : myArguments.values()) {
 			if (!a.isMandatory() && !a.isHidden()) {
-				usage.prepareNonMandatory(a.getPrimaryName(), a.hasVariableParameterCount(), a.getMaxArgumentCount(), a.getAliases(), a.getDescription());
+				usage.prepareNonMandatory(a.getPrimaryName(), a.hasVariableParameterCount(), a.getMaxArgumentCount(), a.getAliases(), a.getDependencyNames(), a.getDescription());
 			}
 		}
 	}

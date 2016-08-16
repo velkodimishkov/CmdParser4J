@@ -90,6 +90,10 @@ class Argument {
 		return myNames.get(0);
 	}
 
+	List<String> getDependencyNames() {
+		return myDependencies;
+	}
+
 	List<String> getAliases() {
 		// If from > to, then an empty list is returned. That is what we want (first item is the primary name)
 		return myNames.subList( 1, myNames.size() );

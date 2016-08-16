@@ -700,4 +700,42 @@ public class CmdParser4JTest {
 		}
 	}
 
+	@Test
+	public void testDependsOnFormatterOk() throws Exception {
+		IParseResult msg = new SystemOutputParseResult();
+		CmdParser4J p = new CmdParser4J(msg);
+		p.accept("--D").asString(1, Constructor.NO_PARAMETER_LIMIT).dependsOn("--A").describedAs("Command D.");
+		p.accept("--E").asBoolean(1).dependsOn("--A").describedAs("Command E.");
+		p.accept("--A").asBoolean(1).withAlias("-a").dependsOn("--F").dependsOn("--B").dependsOn("--C").describedAs("Command A.");
+		p.accept("--F").asString(1, 5).dependsOn("--B").dependsOn("--E").describedAs("Command F.");
+		p.accept("--B").asBoolean(1).withAlias("-b").describedAs("Command B.");
+		p.accept("--C").asString(1, 5).describedAs("Command C.");
+
+		SystemOutputUsageFormatter usage = new SystemOutputUsageFormatter("Application name");
+		p.getUsage(usage);
+
+		assertTrue(p.parse("--A", "true", "--E", "true", "--D", "myStr2", "--F", "myStr3", "--B", "false", "--C", "myStr1"));
+		assertEquals("", msg.getParseResult());
+
+		System.out.println(usage);
+	}
+
+	@Test
+	public void testDependsOnFormatterNok() throws Exception {
+		IParseResult msg = new SystemOutputParseResult();
+		CmdParser4J p = new CmdParser4J(msg);
+		p.accept("--D").asString(1, Constructor.NO_PARAMETER_LIMIT).dependsOn("--A").describedAs("Command D.");
+		p.accept("--E").asBoolean(1).dependsOn("--A").describedAs("Command E.");
+		p.accept("--A").asBoolean(1).withAlias("-a").dependsOn("--F").dependsOn("--B").dependsOn("--C").describedAs("Command A.");
+		p.accept("--F").asString(1, 5).dependsOn("--B").dependsOn("--E").describedAs("Command F.");
+		p.accept("--B").asBoolean(1).withAlias("-b").describedAs("Command B.");
+		p.accept("--C").asString(1, 5).describedAs("Command C.");
+
+		SystemOutputUsageFormatter usage = new SystemOutputUsageFormatter("Application name");
+		p.getUsage(usage);
+
+		assertFalse(p.parse("--A", "true", "--E", "true", "--D", "myStr2", "--B", "false"));
+
+		System.out.println(usage);
+	}
 }
