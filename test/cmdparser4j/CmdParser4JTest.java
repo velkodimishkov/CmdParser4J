@@ -180,8 +180,6 @@ public class CmdParser4JTest {
 		assertTrue( usage.toString().contains("/B") );
 		assertTrue( usage.toString().contains("-B") );
 		assertTrue( usage.toString().contains("-b") );
-
-		System.out.println(usage);
 	}
 
 	@Test
@@ -261,7 +259,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testDependsOnMissing() throws Exception {
+	public void testDependsOnMissing() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("-first").asBoolean(1).dependsOn("-second");
@@ -326,7 +324,6 @@ public class CmdParser4JTest {
 		p.accept("-second").asSingleBoolean().blockedBy("-first");
 		assertFalse(p.parse("-first", "-second"));
 		assertTrue(msg.getParseResult().contains("mutually exclusive"));
-		System.out.println(msg.getParseResult());
 	}
 
 	@Test
@@ -375,7 +372,7 @@ public class CmdParser4JTest {
 		SystemOutputUsageFormatter usage = new SystemOutputUsageFormatter("MyCmdString");
 		p.getUsage(usage);
 
-		System.out.println(usage);
+		assertTrue( usage.toString().contains("-multi  <arg1> [... <arg4>]"));
 	}
 
 	@Test
@@ -399,7 +396,7 @@ public class CmdParser4JTest {
 		p.accept("-first");
 		assertFalse(p.parse("-first"));
 		String s = msg.getParseResult();
-		assert (s.contains("is missing type information"));
+		assertTrue (s.contains("is missing type information"));
 	}
 
 	@Test
@@ -410,7 +407,7 @@ public class CmdParser4JTest {
 		p.accept("-first").asSingleBoolean();
 		assertFalse(p.parse("jada", "Jada"));
 		String s = msg.getParseResult();
-		assert (s.contains("jada, Jada"));
+		assertTrue (s.contains("jada, Jada"));
 	}
 
 	@Test
@@ -421,7 +418,7 @@ public class CmdParser4JTest {
 		p.accept("-first").asSingleBoolean();
 		assertFalse(p.parse("jada", "-first"));
 		String s = msg.getParseResult();
-		assert (s.contains("jada"));
+		assertTrue (s.contains("jada"));
 	}
 
 	@Test
@@ -586,11 +583,11 @@ public class CmdParser4JTest {
 		}
 		catch (FileNotFoundException ex )
 		{
-			Assert.fail();
+			Assert.fail(ex.toString());
 		}
 		catch (IOException ex)
 		{
-			Assert.fail();
+			Assert.fail(ex.toString());
 		}
 	}
 
@@ -654,11 +651,11 @@ public class CmdParser4JTest {
 		}
 		catch (FileNotFoundException ex )
 		{
-			Assert.fail();
+			Assert.fail(ex.toString());
 		}
 		catch (IOException ex )
 		{
-			Assert.fail();
+			Assert.fail(ex.toString());
 		}
 	}
 

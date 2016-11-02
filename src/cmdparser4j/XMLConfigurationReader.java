@@ -12,11 +12,12 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Logger;
 
 public class XMLConfigurationReader implements IConfigurationReader {
 
@@ -131,6 +132,7 @@ public class XMLConfigurationReader implements IConfigurationReader {
 				res = argument.parse(data);
 
 			} catch (XPathExpressionException ex) {
+				myResult.exception(ex);
 				res = false;
 			}
 		}
