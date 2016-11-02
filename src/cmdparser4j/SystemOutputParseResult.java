@@ -80,6 +80,11 @@ public class SystemOutputParseResult implements IParseResult {
 		appendLine("Parameter for argument '" + primaryName + "' is outside allowed lengths of " + limit.getLower().toString() + " - " + limit.getUpper().toString() );
 	}
 
+	@Override
+	public void exception(Exception e) {
+		// We don't log these at all as we give more user-friendly messages via other logs.
+	}
+
 	void appendLine(String format, Object... arguments) {
 		String msg = String.format(format, arguments);
 		sb.append(String.format("%s%n", msg)); // %n => newline

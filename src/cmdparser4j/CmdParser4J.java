@@ -74,7 +74,7 @@ public class CmdParser4J {
 	 */
 	private boolean parse(ArrayList<String> args, IConfigurationReader cfg ) {
 
-		args = removeEmptyArguments(args);
+		removeEmptyArguments(args);
 
 		boolean result = checkArgumentTypes() && checkConstraints(args);
 
@@ -280,15 +280,14 @@ public class CmdParser4J {
 	/**
 	 * Removes empty arguments
 	 */
-	private ArrayList<String> removeEmptyArguments(ArrayList<String> args) {
-		ArrayList<String> cleaned = new ArrayList<String>();
-		for (String a : args) {
-			if (a.length() > 0) {
-				cleaned.add(a);
+	private void removeEmptyArguments(ArrayList<String> args) {
+		Iterator<String> curr = args.iterator();
+		while( curr.hasNext() ) {
+			String s = curr.next();
+			if( s.isEmpty() ) {
+				curr.remove();
 			}
 		}
-
-		return cleaned;
 	}
 
 	/**

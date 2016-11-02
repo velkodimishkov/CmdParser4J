@@ -27,6 +27,7 @@ public class IntegerType extends BaseType<Integer, Integer> {
 			catch (NumberFormatException ex)
 			{
 				// Parse failed.
+				myParser.getMessageParser().exception( ex );
 			}
 		}
 

@@ -38,4 +38,6 @@ public interface IParseResult {
 	void outsideLimits(String primaryName, NumericLimit tNumericLimit);
 
 	void outsideLimits(String primaryName, StringLengthLimit tNumericLimit);
+
+	void exception( Exception e );
 }

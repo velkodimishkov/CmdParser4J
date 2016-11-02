@@ -12,12 +12,11 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.StringReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class XMLConfigurationReader implements IConfigurationReader {
 
@@ -95,12 +94,13 @@ public class XMLConfigurationReader implements IConfigurationReader {
 		private String myMatchAttributeValue = "";
 	}
 
-	public XMLConfigurationReader() {
-
+	public XMLConfigurationReader( IParseResult parseResult ) {
+		myResult = parseResult;
 	}
 
-	public XMLConfigurationReader(String xmlData) {
+	public XMLConfigurationReader(String xmlData, IParseResult parseResult) {
 		mySource = new InputSource(new StringReader(xmlData));
+		myResult = parseResult;
 	}
 
 	public void setMatcher(String primaryArgumentName, NodeMatcher matcher) {
@@ -150,21 +150,22 @@ public class XMLConfigurationReader implements IConfigurationReader {
 			if( file.exists() ) {
 				input = new FileInputStream(pathToFile);
 				byte[] data = new byte[(int)file.length()];
-				input.read(data);
-				mySource = new InputSource( new StringReader(new String( data, "UTF-8") ) );
-				res = true;
+				if( input.read(data) > 0 ) {
+					mySource = new InputSource(new StringReader(new String(data, "UTF-8")));
+					res = true;
+				}
 			}
-		}
-		catch (Exception ex )
-		{
-
-		}
-		finally {
+		} catch (Exception e) {
+			myResult.exception(e);
+			res = false;
+		} finally {
 			if( input != null) {
 				try {
 					input.close();
 				}
-				catch (Exception ex) {}
+				catch (Exception ex) {
+					myResult.exception(ex);
+				}
 			}
 		}
 
@@ -174,6 +175,7 @@ public class XMLConfigurationReader implements IConfigurationReader {
 	private final HashMap<String, NodeMatcher> myMatcher = new HashMap<String, NodeMatcher>();
 	private final XPathFactory myXPathFactory = XPathFactory.newInstance();
 	private InputSource mySource = null;
+	private final IParseResult myResult;
 
 }
 

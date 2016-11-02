@@ -24,11 +24,11 @@ public class BooleanType extends BaseType<Boolean, Boolean> {
 		int count = myResults.size();
 
 		if (parameter != null) {
-			parameter = parameter.toLowerCase();
-			if (parameter.equals(ZERO) || parameter.equals(ONE)) {
-				myResults.add(parameter.equals("1"));
-			} else if (parameter.equals(TRUE) || parameter.equals(FALSE)) {
-				myResults.add(parameter.equals(TRUE));
+			String p = parameter.toLowerCase();
+			if (p.equals(ZERO) || p.equals(ONE)) {
+				myResults.add(p.equals("1"));
+			} else if (p.equals(TRUE) || p.equals(FALSE)) {
+				myResults.add(p.equals(TRUE));
 			}
 		}
 

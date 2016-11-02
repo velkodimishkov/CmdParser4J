@@ -5,17 +5,20 @@ package cmdparser4j;
 
 import cmdparser4j.limits.NumericLimit;
 import cmdparser4j.limits.StringLengthLimit;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 import static org.junit.Assert.*;
 
 public class CmdParser4JTest {
 
 	@Test
-	public void testParse() throws Exception {
+	public void testParse() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("-m").asString(2);
@@ -32,7 +35,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testWrongType() throws Exception {
+	public void testWrongType() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("-b").asSingleBoolean();
@@ -43,7 +46,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testSpecifiedMultipleTimes() throws Exception {
+	public void testSpecifiedMultipleTimes() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("-q").asString(1).withAlias("-Q");
@@ -53,7 +56,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testMissingMandatory() throws Exception {
+	public void testMissingMandatory() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("-q").asString(1).setMandatory();
@@ -63,7 +66,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testLeftOvers() throws Exception {
+	public void testLeftOvers() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("-Q").asString(1);
@@ -72,7 +75,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testBoolean() throws Exception {
+	public void testBoolean() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("/b").asBoolean(4);
@@ -86,7 +89,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testSingleBoolean() throws Exception {
+	public void testSingleBoolean() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("foo").asSingleBoolean();
@@ -98,7 +101,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testInteger() throws Exception {
+	public void testInteger() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("-a").asInteger(1);
@@ -109,7 +112,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testIntegerInvalidData() throws Exception {
+	public void testIntegerInvalidData() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("-a").asInteger(1);
@@ -117,7 +120,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testFailedParse() throws Exception {
+	public void testFailedParse() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("/b").asBoolean(4);
@@ -126,7 +129,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testMissingParameters() throws Exception {
+	public void testMissingParameters() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("/b").asBoolean(4);
@@ -135,7 +138,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testMissingParameters2() throws Exception {
+	public void testMissingParameters2() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("/b").asBoolean(4);
@@ -144,7 +147,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testNoInputWithMandatory() throws Exception {
+	public void testNoInputWithMandatory() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("/b").asBoolean(1).setMandatory();
@@ -153,7 +156,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testDescription() throws Exception {
+	public void testDescription() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("single").asSingleBoolean().describedAs("AAA BBBBB CCCCCCCCCCC DDDDDDDDDDDDDDE EEEEEEEEEEEEEEEE FFFFFFFFFFF GGGGGGGGGGGGGGG HHHHHHHHHHHH");
@@ -182,7 +185,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testVariableParameterCount() throws Exception {
+	public void testVariableParameterCount() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("/b").asBoolean(1, Constructor.NO_PARAMETER_LIMIT);
@@ -196,7 +199,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testMultiArgumentInMiddle() throws Exception {
+	public void testMultiArgumentInMiddle() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("single").asSingleBoolean().describedAs("AAA BBBBB CCCCCCCCCCC DDDDDDDDDDDDDDE EEEEEEEEEEEEEEEE FFFFFFFFFFF GGGGGGGGGGGGGGG HHHHHHHHHHHH");
@@ -213,7 +216,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testNotEnoughParameters() throws Exception {
+	public void testNotEnoughParameters() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("/b").asBoolean(2);
@@ -223,7 +226,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testNotEnoughParameters2() throws Exception {
+	public void testNotEnoughParameters2() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("/a").asBoolean(1);
@@ -234,7 +237,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testMultipleMulti() throws Exception {
+	public void testMultipleMulti() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("/multi1").asBoolean(1, 3);
@@ -247,7 +250,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testSameArgumentMultipleTimes() throws Exception {
+	public void testSameArgumentMultipleTimes() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("/multi1").asBoolean(1, 3);
@@ -268,7 +271,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testDependsOnOk() throws Exception {
+	public void testDependsOnOk() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("-first").asBoolean(1).dependsOn("-second");
@@ -278,7 +281,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testDependsTwoWay() throws Exception {
+	public void testDependsTwoWay() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("-first").asBoolean(1).dependsOn("-second");
@@ -288,7 +291,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testDependsTwoWayFail() throws Exception {
+	public void testDependsTwoWayFail() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("-first").asBoolean(1).dependsOn("-second");
@@ -298,7 +301,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testDependsOnProgrammingError() throws Exception {
+	public void testDependsOnProgrammingError() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("-first").asBoolean(1).dependsOn("-second");
@@ -307,7 +310,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testBlockedByOK() throws Exception {
+	public void testBlockedByOK() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("-first").asSingleBoolean().blockedBy("-second");
@@ -316,7 +319,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testBlockedByFAIL() throws Exception {
+	public void testBlockedByFAIL() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("-first").asSingleBoolean().blockedBy("-second");
@@ -327,7 +330,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testBlockedByNoSuchDefined() throws Exception {
+	public void testBlockedByNoSuchDefined() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("-first").asBoolean(0).blockedBy("-doesnotexist");
@@ -338,7 +341,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testHiddenArgument() throws Exception {
+	public void testHiddenArgument() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("first").asSingleBoolean().setHidden();
@@ -348,7 +351,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testGitExample() throws Exception {
+	public void testGitExample() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("-argument").asBoolean(1).setMandatory().describedAs("An argument that accept a single boolean parameter");
@@ -376,7 +379,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testGitExample2() throws Exception {
+	public void testGitExample2() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("-argument").asBoolean(1).setMandatory().describedAs("An argument that accept a single boolean parameter");
@@ -389,7 +392,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testMissingArgumentTypee() throws Exception {
+	public void testMissingArgumentTypee() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 
@@ -400,7 +403,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testGarbageOnCommandLine() throws Exception {
+	public void testGarbageOnCommandLine() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 
@@ -411,7 +414,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testGarbageBeforeFirstCommand() throws Exception {
+	public void testGarbageBeforeFirstCommand() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 
@@ -422,7 +425,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testReadConfigFromConfiguration_textformat() throws Exception {
+	public void testReadConfigFromConfiguration_textformat() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("-first").asInteger(3);
@@ -433,7 +436,7 @@ public class CmdParser4JTest {
 				"<First><![CDATA[42]]></First>" +
 				"</Settings>";
 
-		XMLConfigurationReader cfg = new XMLConfigurationReader(cfgStr);
+		XMLConfigurationReader cfg = new XMLConfigurationReader(cfgStr, msg);
 		cfg.setMatcher("-first", new XMLConfigurationReader.NodeMatcher("/Settings/First"));
 
 		assertTrue(p.parse(cfg));
@@ -444,7 +447,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testReadConfigFromConfiguration_read_attribute_via_name_value_pair() throws Exception {
+	public void testReadConfigFromConfiguration_read_attribute_via_name_value_pair() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("-first").asInteger(3);
@@ -455,7 +458,7 @@ public class CmdParser4JTest {
 				"<First Key=\"KeyName\" Value=\"9012\"/>" +
 				"</Settings>";
 
-		XMLConfigurationReader cfg = new XMLConfigurationReader(cfgStr);
+		XMLConfigurationReader cfg = new XMLConfigurationReader(cfgStr, msg);
 		cfg.setMatcher("-first", new XMLConfigurationReader.NodeMatcher("/Settings/First", "Value", "Key", "KeyName"));
 
 		assertTrue(p.parse(cfg));
@@ -466,7 +469,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testReadConfigFromConfiguration_read_attribute_don_not_care_about_matching_name_value_pair() throws Exception {
+	public void testReadConfigFromConfiguration_read_attribute_don_not_care_about_matching_name_value_pair() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("-first").asInteger(3);
@@ -477,7 +480,7 @@ public class CmdParser4JTest {
 				"<First Key=\"KeyName\" Value=\"90\"/>" +
 				"</Settings>";
 
-		XMLConfigurationReader cfg = new XMLConfigurationReader(cfgStr);
+		XMLConfigurationReader cfg = new XMLConfigurationReader(cfgStr, msg);
 		cfg.setMatcher("-first", new XMLConfigurationReader.NodeMatcher("/Settings/First", "Value"));
 
 		assertTrue(p.parse(cfg));
@@ -488,7 +491,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testReadConfigFromConfiguration_read_text_data_via_name_value_pair() throws Exception {
+	public void testReadConfigFromConfiguration_read_text_data_via_name_value_pair() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("-first").asInteger(3);
@@ -499,7 +502,7 @@ public class CmdParser4JTest {
 				"<First Key=\"KeyName\">300</First>" +
 				"</Settings>";
 
-		XMLConfigurationReader cfg = new XMLConfigurationReader(cfgStr);
+		XMLConfigurationReader cfg = new XMLConfigurationReader(cfgStr, msg);
 		cfg.setMatcher("-first", new XMLConfigurationReader.NodeMatcher("/Settings/First", "Key", "KeyName"));
 
 		assertTrue(p.parse(cfg));
@@ -510,7 +513,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testReadConfigFromConfiguration_config_file_is_missing_entries() throws Exception {
+	public void testReadConfigFromConfiguration_config_file_is_missing_entries() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("-first").asInteger(3);
@@ -520,14 +523,14 @@ public class CmdParser4JTest {
 				"<First Key=\"KeyName\">56</First>" +
 				"</Settings>";
 
-		XMLConfigurationReader cfg = new XMLConfigurationReader(cfgStr);
+		XMLConfigurationReader cfg = new XMLConfigurationReader(cfgStr, msg);
 		cfg.setMatcher("-first", new XMLConfigurationReader.NodeMatcher("/Settings/First"));
 
 		assertFalse(p.parse(cfg));
 	}
 
 	@Test
-	public void testReadConfigFromConfiguration_invalid_xpath() throws Exception {
+	public void testReadConfigFromConfiguration_invalid_xpath() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("-first").asInteger(3);
@@ -538,60 +541,67 @@ public class CmdParser4JTest {
 				"<First Key=\"KeyName\">57</First>" +
 				"</Settings>";
 
-		XMLConfigurationReader cfg = new XMLConfigurationReader(cfgStr);
+		XMLConfigurationReader cfg = new XMLConfigurationReader(cfgStr, msg);
 		cfg.setMatcher("-first", new XMLConfigurationReader.NodeMatcher("%#%&##%#"));
 
 		assertFalse(p.parse(cfg));
 	}
 
 	@Test
-	public void testReadConfigFromConfiguration_specified_on_commandline() throws Exception {
-		IParseResult msg = new SystemOutputParseResult();
-		CmdParser4J p = new CmdParser4J(msg);
-		p.accept("-first").asInteger(3);
-		p.accept("-config").asString(1).setMandatory();
+	public void testReadConfigFromConfiguration_specified_on_commandline() {
+		try {
+			IParseResult msg = new SystemOutputParseResult();
+			CmdParser4J p = new CmdParser4J(msg);
+			p.accept("-first").asInteger(3);
+			p.accept("-config").asString(1).setMandatory();
 
-		String fileName = "config.xml";
+			String fileName = "config.xml";
 
-		String cfgStr = "<Settings>" +
-				"<First>88</First>" +
-				"<First>89</First>" +
-				"<First>90</First>" +
-				"</Settings>";
+			String cfgStr = "<Settings>" +
+					"<First>88</First>" +
+					"<First>89</First>" +
+					"<First>90</First>" +
+					"</Settings>";
 
-		File f = new File(fileName);
-		if (f.exists()) {
-			f.delete();
+			File f = new File(fileName);
+			if (f.exists()) {
+				assertTrue(f.delete());
+			}
+
+			FileOutputStream fs = new FileOutputStream(fileName);
+			fs.write(cfgStr.getBytes());
+			fs.close();
+
+			assertTrue(f.exists());
+			f.deleteOnExit();
+
+			XMLConfigurationReader cfg = new XMLConfigurationReader( msg );
+			cfg.setMatcher("-first", new XMLConfigurationReader.NodeMatcher("/Settings/First"));
+
+			assertTrue(p.parse("-config", cfg, "-config", fileName));
+
+			assertTrue(p.getInteger("-first") == 88);
+			assertTrue(p.getInteger("-first", 1) == 89);
+			assertTrue(p.getInteger("-first", 2) == 90);
 		}
-
-		FileOutputStream fs = new FileOutputStream(fileName);
-		fs.write(cfgStr.getBytes());
-		fs.close();
-
-		assertTrue(f.exists());
-
-		XMLConfigurationReader cfg = new XMLConfigurationReader();
-		cfg.setMatcher("-first", new XMLConfigurationReader.NodeMatcher("/Settings/First"));
-
-		assertTrue(p.parse("-config", cfg, "-config", fileName));
-
-		assertTrue(p.getInteger("-first") == 88);
-		assertTrue(p.getInteger("-first", 1) == 89);
-		assertTrue(p.getInteger("-first", 2) == 90);
-
-		if (f.exists()) {
-			f.delete();
+		catch (FileNotFoundException ex )
+		{
+			Assert.fail();
+		}
+		catch (IOException ex)
+		{
+			Assert.fail();
 		}
 	}
 
 	@Test
-	public void testReadConfigFromConfiguration_config_file_missing() throws Exception {
+	public void testReadConfigFromConfiguration_config_file_missing() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("-first").asInteger(3);
 		p.accept("-config").asString(1).setMandatory();
 
-		XMLConfigurationReader cfg = new XMLConfigurationReader();
+		XMLConfigurationReader cfg = new XMLConfigurationReader(msg);
 		cfg.setMatcher("-first", new XMLConfigurationReader.NodeMatcher("/Settings/First"));
 
 		assertFalse(p.parse("-config", cfg, "-config", "non-existingFile.xml"));
@@ -599,51 +609,61 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testReadConfigFromConfiguration_read_to_settings() throws Exception {
-		IParseResult msg = new SystemOutputParseResult();
-		CmdParser4J p = new CmdParser4J(msg);
-		p.accept("-first").asInteger(3);
-		p.accept("-second").asSingleBoolean();
-		p.accept("-config").asString(1).setMandatory();
+	public void testReadConfigFromConfiguration_read_to_settings() {
+		try {
+			IParseResult msg = new SystemOutputParseResult();
+			CmdParser4J p = new CmdParser4J(msg);
+			p.accept("-first").asInteger(3);
+			p.accept("-second").asSingleBoolean();
+			p.accept("-config").asString(1).setMandatory();
 
-		String fileName = "config.xml";
+			String fileName = "config.xml";
 
-		String cfgStr = "<Settings>" +
-				"<First>88</First>" +
-				"<First>89</First>" +
-				"<First>90</First>" +
-				"<Second><Awesome>42</Awesome></Second>" +
-				"</Settings>";
+			String cfgStr = "<Settings>" +
+					"<First>88</First>" +
+					"<First>89</First>" +
+					"<First>90</First>" +
+					"<Second><Awesome>42</Awesome></Second>" +
+					"</Settings>";
 
-		File f = new File(fileName);
-		if (f.exists()) {
-			f.delete();
+			File f = new File(fileName);
+			if (f.exists()) {
+				assertTrue( f.delete() );
+			}
+
+			FileOutputStream fs = new FileOutputStream(fileName);
+			fs.write(cfgStr.getBytes());
+			fs.close();
+
+			assertTrue(f.exists());
+
+			XMLConfigurationReader cfg = new XMLConfigurationReader(msg);
+			cfg.setMatcher("-first", new XMLConfigurationReader.NodeMatcher("/Settings/First"));
+			cfg.setMatcher("-second", new XMLConfigurationReader.NodeMatcher("/Settings/Second/Awesome"));
+
+			assertTrue(p.parse("-config", cfg, "-config", fileName, "-second"));
+
+			assertTrue(p.getInteger("-first") == 88);
+			assertTrue(p.getInteger("-first", 1) == 89);
+			assertTrue(p.getInteger("-first", 2) == 90);
+			assertTrue(p.getBool("-second"));
+
+			if (f.exists()) {
+				assertTrue( f.delete() );
+			}
 		}
-
-		FileOutputStream fs = new FileOutputStream(fileName);
-		fs.write(cfgStr.getBytes());
-		fs.close();
-
-		assertTrue(f.exists());
-
-		XMLConfigurationReader cfg = new XMLConfigurationReader();
-		cfg.setMatcher("-first", new XMLConfigurationReader.NodeMatcher("/Settings/First"));
-		cfg.setMatcher("-second", new XMLConfigurationReader.NodeMatcher("/Settings/Second/Awesome"));
-
-		assertTrue(p.parse("-config", cfg, "-config", fileName, "-second"));
-
-		assertTrue(p.getInteger("-first") == 88);
-		assertTrue(p.getInteger("-first", 1) == 89);
-		assertTrue(p.getInteger("-first", 2) == 90);
-		assertTrue(p.getBool("-second"));
-
-		if (f.exists()) {
-			f.delete();
+		catch (FileNotFoundException ex )
+		{
+			Assert.fail();
+		}
+		catch (IOException ex )
+		{
+			Assert.fail();
 		}
 	}
 
 	@Test
-	public void testIntegerLimitsOk() throws Exception {
+	public void testIntegerLimitsOk() {
 		IParseResult msg = new SystemOutputParseResult();
 		for (Integer i = 4; i < 6; ++i) {
 			CmdParser4J p = new CmdParser4J(msg);
@@ -653,7 +673,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testIntegerLimitsFail() throws Exception {
+	public void testIntegerLimitsFail() {
 		IParseResult msg = new SystemOutputParseResult();
 		for (Integer i = 1; i < 4; ++i) {
 			CmdParser4J p = new CmdParser4J(msg);
@@ -672,7 +692,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testIStringLimitsOk() throws Exception {
+	public void testIStringLimitsOk() {
 		IParseResult msg = new SystemOutputParseResult();
 		for (Integer i = 4; i < 6; ++i) {
 			CmdParser4J p = new CmdParser4J(msg);
@@ -682,7 +702,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testStringLimitsFail() throws Exception {
+	public void testStringLimitsFail() {
 		IParseResult msg = new SystemOutputParseResult();
 		for (Integer i = 1; i < 4; ++i) {
 			CmdParser4J p = new CmdParser4J(msg);
@@ -701,7 +721,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testDependsOnFormatterOk() throws Exception {
+	public void testDependsOnFormatterOk() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("--D").asString(1, Constructor.NO_PARAMETER_LIMIT).dependsOn("--A").describedAs("Command D.");
@@ -721,7 +741,7 @@ public class CmdParser4JTest {
 	}
 
 	@Test
-	public void testDependsOnFormatterNok() throws Exception {
+	public void testDependsOnFormatterNok() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
 		p.accept("--D").asString(1, Constructor.NO_PARAMETER_LIMIT).dependsOn("--A").describedAs("Command D.");
