@@ -15,6 +15,7 @@ import javax.xml.xpath.XPathFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -95,12 +96,12 @@ public class XMLConfigurationReader implements IConfigurationReader {
 		private String myMatchAttributeValue = "";
 	}
 
-	public XMLConfigurationReader( IParseResult parseResult ) {
+	public XMLConfigurationReader(IParseResult parseResult) {
 		myResult = parseResult;
 	}
 
 	public XMLConfigurationReader(String xmlData, IParseResult parseResult) {
-		mySource = new InputSource(new StringReader(xmlData));
+		myData = xmlData.getBytes();
 		myResult = parseResult;
 	}
 
@@ -121,7 +122,7 @@ public class XMLConfigurationReader implements IConfigurationReader {
 			try {
 				// Select the node in the XML tree
 				XPath path = myXPathFactory.newXPath();
-				NodeList nodes = (NodeList) path.evaluate(matcher.getPath(), mySource, XPathConstants.NODESET);
+				NodeList nodes = (NodeList) path.evaluate(matcher.getPath(), new InputSource(new StringReader(new String(myData, "UTF-8"))), XPathConstants.NODESET);
 
 				// Loop each found node and let the matcher decide if it is a match.
 				for (int i = 0; i < nodes.getLength(); ++i) {
@@ -131,7 +132,7 @@ public class XMLConfigurationReader implements IConfigurationReader {
 
 				res = argument.parse(data);
 
-			} catch (XPathExpressionException ex) {
+			} catch (XPathExpressionException | UnsupportedEncodingException ex) {
 				myResult.exception(ex);
 				res = false;
 			}
@@ -141,19 +142,18 @@ public class XMLConfigurationReader implements IConfigurationReader {
 	}
 
 	@Override
-	public boolean loadFromFile( String pathToFile )
-	{
+	public boolean loadFromFile(String pathToFile) {
 		boolean res = false;
 
 		FileInputStream input = null;
 
 		try {
-			File file = new File( pathToFile);
-			if( file.exists() ) {
+			File file = new File(pathToFile);
+			if (file.exists()) {
 				input = new FileInputStream(pathToFile);
-				byte[] data = new byte[(int)file.length()];
-				if( input.read(data) > 0 ) {
-					mySource = new InputSource(new StringReader(new String(data, "UTF-8")));
+				byte[] data = new byte[(int) file.length()];
+				if (input.read(data) > 0) {
+					myData = data;
 					res = true;
 				}
 			}
@@ -161,11 +161,10 @@ public class XMLConfigurationReader implements IConfigurationReader {
 			myResult.exception(e);
 			res = false;
 		} finally {
-			if( input != null) {
+			if (input != null) {
 				try {
 					input.close();
-				}
-				catch (Exception ex) {
+				} catch (Exception ex) {
 					myResult.exception(ex);
 				}
 			}
@@ -176,7 +175,7 @@ public class XMLConfigurationReader implements IConfigurationReader {
 
 	private final HashMap<String, NodeMatcher> myMatcher = new HashMap<String, NodeMatcher>();
 	private final XPathFactory myXPathFactory = XPathFactory.newInstance();
-	private InputSource mySource = null;
+	private byte[] myData = null;
 	private final IParseResult myResult;
 
 }
