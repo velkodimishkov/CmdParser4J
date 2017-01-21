@@ -132,7 +132,10 @@ public class XMLConfigurationReader implements IConfigurationReader {
 
 				res = argument.parse(data);
 
-			} catch (XPathExpressionException | UnsupportedEncodingException ex) {
+			} catch (XPathExpressionException ex) {
+				myResult.exception(ex);
+				res = false;
+			} catch (UnsupportedEncodingException ex) {
 				myResult.exception(ex);
 				res = false;
 			}
