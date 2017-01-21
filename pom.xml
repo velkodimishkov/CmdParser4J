@@ -6,7 +6,7 @@
 
     <groupId>com.github.permalmberg.cmdparser4j</groupId>
     <artifactId>CmdParser4J</artifactId>
-    <version>1.0</version>
+    <version>master-SNAPSHOT</version>
 
     <contributors>
         <contributor>
