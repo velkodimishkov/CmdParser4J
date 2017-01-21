@@ -1,8 +1,6 @@
 // Copyright (c) 2016 Per Malmberg
 // Licensed under MIT, see LICENSE file.
 
-package test.java;
-
 import cmdparser4j.*;
 import cmdparser4j.limits.NumericLimit;
 import cmdparser4j.limits.StringLengthLimit;

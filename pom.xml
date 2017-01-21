@@ -4,15 +4,28 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.codezeal.cmdparser4j</groupId>
+    <groupId>com.github.permalmberg.cmdparser4j</groupId>
     <artifactId>CmdParser4J</artifactId>
     <version>1.0</version>
+
+    <contributors>
+        <contributor>
+            <name>Per Malmberg</name>
+            <email>per.malmberg@gmail.com</email>
+            <roles>
+                <role>Author</role>
+                <role>Lead Developer</role>
+                <role>Maintainer</role>
+            </roles>
+        </contributor>
+    </contributors>
 
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
