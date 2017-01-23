@@ -605,6 +605,19 @@ public class CmdParser4JTest {
 	}
 
 	@Test
+	public void testNoConfigFileSpecified() {
+		IParseResult msg = new SystemOutputParseResult();
+		CmdParser4J p = new CmdParser4J(msg);
+		p.accept("-first").asInteger(3);
+		p.accept("-config").asString(1);
+
+		XMLConfigurationReader cfg = new XMLConfigurationReader(msg);
+		cfg.setMatcher("-first", new XMLConfigurationReader.NodeMatcher("/Settings/First"));
+
+		assertTrue(p.parse("-config", cfg, "-first", "1", "2", "3"));
+	}
+
+	@Test
 	public void testReadConfigFromConfiguration_read_to_settings() {
 		try {
 			IParseResult msg = new SystemOutputParseResult();

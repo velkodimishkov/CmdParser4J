@@ -138,10 +138,7 @@ public class CmdParser4J {
 
 		if( myConfigurationfileNameArgument != null) {
 			String fileName = getString(myConfigurationfileNameArgument);
-			if( fileName == null ) {
-				myResult.failedToLoadConfiguration(myConfigurationfileNameArgument);
-			}
-			else {
+			if( fileName != null ) {
 				result = cfg.loadFromFile( fileName );
 
 				if( !result ) {
@@ -264,16 +261,18 @@ public class CmdParser4J {
 	private boolean fallbackToConfiguration(IConfigurationReader cfgReader) {
 		boolean res = true;
 
-		// Let each argument that has not already been successfully parsed based on the
-		// command line attempt a fallback to the configuration
-		if (cfgReader != null) {
-			for( Argument a : myArguments.values() ) {
-				if (!a.isSuccessFullyParsed()) {
-					res &= cfgReader.fillFromConfiguration(a);
+		// Only attempt to load the config if we don't have a specific config argument, or if it has been specified on the command line.
+		if( myConfigurationfileNameArgument == null || getString(myConfigurationfileNameArgument) != null ) {
+			// Let each argument that has not already been successfully parsed based on the
+			// command line attempt a fallback to the configuration
+			if (cfgReader != null) {
+				for (Argument a : myArguments.values()) {
+					if (!a.isSuccessFullyParsed()) {
+						res &= cfgReader.fillFromConfiguration(a);
+					}
 				}
 			}
 		}
-
 		return res;
 	}
 
