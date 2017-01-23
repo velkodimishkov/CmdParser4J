@@ -113,31 +113,36 @@ public class XMLConfigurationReader implements IConfigurationReader {
 	public boolean fillFromConfiguration(Argument argument) {
 		boolean res = true;
 
-		NodeMatcher matcher = myMatcher.get(argument.getPrimaryName());
-		if (matcher != null) {
-			List<String> data = new ArrayList<String>();
-			// The name of the argument must be the first item in array of items to parse
-			data.add(argument.getPrimaryName());
+		if (myData == null) {
+			// Can't do anything if we have no data.
+			res = false;
+		} else {
+			NodeMatcher matcher = myMatcher.get(argument.getPrimaryName());
+			if (matcher != null) {
+				List<String> data = new ArrayList<String>();
+				// The name of the argument must be the first item in array of items to parse
+				data.add(argument.getPrimaryName());
 
-			try {
-				// Select the node in the XML tree
-				XPath path = myXPathFactory.newXPath();
-				NodeList nodes = (NodeList) path.evaluate(matcher.getPath(), new InputSource(new StringReader(new String(myData, "UTF-8"))), XPathConstants.NODESET);
+				try {
+					// Select the node in the XML tree
+					XPath path = myXPathFactory.newXPath();
+					NodeList nodes = (NodeList) path.evaluate(matcher.getPath(), new InputSource(new StringReader(new String(myData, "UTF-8"))), XPathConstants.NODESET);
 
-				// Loop each found node and let the matcher decide if it is a match.
-				for (int i = 0; i < nodes.getLength(); ++i) {
-					Node n = nodes.item(i);
-					matcher.Match(n, data);
+					// Loop each found node and let the matcher decide if it is a match.
+					for (int i = 0; i < nodes.getLength(); ++i) {
+						Node n = nodes.item(i);
+						matcher.Match(n, data);
+					}
+
+					res = argument.parse(data);
+
+				} catch (XPathExpressionException ex) {
+					myResult.exception(ex);
+					res = false;
+				} catch (UnsupportedEncodingException ex) {
+					myResult.exception(ex);
+					res = false;
 				}
-
-				res = argument.parse(data);
-
-			} catch (XPathExpressionException ex) {
-				myResult.exception(ex);
-				res = false;
-			} catch (UnsupportedEncodingException ex) {
-				myResult.exception(ex);
-				res = false;
 			}
 		}
 
