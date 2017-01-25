@@ -1,7 +1,8 @@
 // Copyright (c) 2016 Per Malmberg
 // Licensed under MIT, see LICENSE file.
 
-import cmdparser4j.Changeable;
+package cmdparser4j;
+
 import org.junit.Test;
 
 import static org.junit.Assert.*;
