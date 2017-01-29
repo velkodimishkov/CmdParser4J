@@ -122,15 +122,30 @@ public class CmdParser4J {
 				}
 			}
 
-			result = result
-					&& loadConfigFile( cfg )
-					&& fallbackToConfiguration(cfg)
-					&& checkMandatory()
-					&& checkDependencies()
-					&& checkMutualExclusion();
+			// If a help argument is provided, then we don't check anything else
+			if( !helpCommandProvided() ) {
+				result = result
+						&& loadConfigFile(cfg)
+						&& fallbackToConfiguration(cfg)
+						&& checkMandatory()
+						&& checkDependencies()
+						&& checkMutualExclusion();
+			}
 		}
 
 		return result;
+	}
+
+	private boolean helpCommandProvided() {
+		boolean res = false;
+
+		for (Argument a : myArguments.values()) {
+			if (a.isHelpCommand() && a.isSuccessFullyParsed()) {
+				res = true;
+			}
+		}
+
+		return res;
 	}
 
 	private boolean loadConfigFile( IConfigurationReader cfg) {

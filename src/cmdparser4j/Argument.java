@@ -18,6 +18,7 @@ class Argument {
 	private String myDescription = "";
 	private IParseResult myResult;
 	private boolean myIsHidden = false;
+	private boolean myIsHelpCommand = false;
 
 
 	public Argument(String argumentName, IParseResult result) {
@@ -69,6 +70,8 @@ class Argument {
 	boolean isMandatory() {
 		return myIsMandatory;
 	}
+
+	boolean isHelpCommand() { return  myIsHelpCommand; }
 
 	void setType(BaseType type) {
 		myType = type;
@@ -178,5 +181,9 @@ class Argument {
 
 	public boolean hasArgumentType() {
 		return myType != null;
+	}
+
+	public void setHelpCommand() {
+		myIsHelpCommand = true;
 	}
 }

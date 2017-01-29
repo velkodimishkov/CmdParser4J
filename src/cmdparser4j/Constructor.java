@@ -73,4 +73,8 @@ public class Constructor {
 		myArg.setHidden();
 		return this;
 	}
+
+	public void setHelpCommand() {
+		myArg.setHelpCommand();
+	}
 }

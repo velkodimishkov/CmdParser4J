@@ -730,7 +730,7 @@ public class CmdParser4JTest {
 		}
 	}
 
-	private void prepareDepdendsonTest( CmdParser4J p )
+	private void prepareDepdendsOnTest(CmdParser4J p )
 	{
 		p.accept("--D").asString(1, Constructor.NO_PARAMETER_LIMIT).dependsOn("--A").describedAs("Command D.");
 		p.accept("--E").asBoolean(1).dependsOn("--A").describedAs("Command E.");
@@ -744,7 +744,7 @@ public class CmdParser4JTest {
 	public void testDependsOnFormatterOk() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
-		prepareDepdendsonTest( p );
+		prepareDepdendsOnTest( p );
 
 		assertTrue(p.parse("--A", "true", "--E", "true", "--D", "myStr2", "--F", "myStr3", "--B", "false", "--C", "myStr1"));
 		assertEquals("", msg.getParseResult());
@@ -754,10 +754,19 @@ public class CmdParser4JTest {
 	public void testDependsOnFormatterNok() {
 		IParseResult msg = new SystemOutputParseResult();
 		CmdParser4J p = new CmdParser4J(msg);
-		prepareDepdendsonTest( p );
-
-		SystemOutputUsageFormatter usage = new SystemOutputUsageFormatter("Application name");
+		prepareDepdendsOnTest( p );
 
 		assertFalse(p.parse("--A", "true", "--E", "true", "--D", "myStr2", "--B", "false"));
+	}
+
+	@Test
+	public void testHelpCommandWithMandatoryArguments()
+	{
+		IParseResult msg = new SystemOutputParseResult();
+		CmdParser4J p = new CmdParser4J(msg);
+		p.accept("--mandatory").asSingleBoolean().setMandatory();
+		p.accept("-h").asSingleBoolean().setHelpCommand();
+
+		assertTrue( p.parse("-h") );
 	}
 }
