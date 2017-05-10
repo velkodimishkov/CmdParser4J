@@ -565,9 +565,16 @@ public class CmdParser4JTest {
 				assertTrue(f.delete());
 			}
 
-			FileOutputStream fs = new FileOutputStream(fileName);
-			fs.write(cfgStr.getBytes());
-			fs.close();
+			FileOutputStream fs = null;
+			try {
+				fs = new FileOutputStream(fileName);
+				fs.write(cfgStr.getBytes());
+			}
+			finally {
+				if( fs != null ) {
+					fs.close();
+				}
+			}
 
 			assertTrue(f.exists());
 			f.deleteOnExit();
@@ -641,9 +648,16 @@ public class CmdParser4JTest {
 				assertTrue( f.delete() );
 			}
 
-			FileOutputStream fs = new FileOutputStream(fileName);
-			fs.write(cfgStr.getBytes());
-			fs.close();
+			FileOutputStream fs = null;
+			try {
+				fs = new FileOutputStream(fileName);
+				fs.write(cfgStr.getBytes());
+			}
+			finally {
+				if( fs != null) {
+					fs.close();
+				}
+			}
 
 			assertTrue(f.exists());
 

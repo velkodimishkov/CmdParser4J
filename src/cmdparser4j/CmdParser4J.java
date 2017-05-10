@@ -223,13 +223,13 @@ public class CmdParser4J {
 		List<String> alreadyTested = new ArrayList<String>();
 		testAgainst.putAll(myArguments);
 
-		for (String key : myArguments.keySet()) {
-			Argument arg = myArguments.get(key);
+		for (Map.Entry<String,Argument> pair : myArguments.entrySet()) {
+			Argument arg = pair.getValue();
 			boolean blocksFound = !arg.checkMutualExclusion(testAgainst, alreadyTested);
 			if (blocksFound) {
 				// Remove argument to prevent double checks
-				alreadyTested.add(key);
-				testAgainst.remove(key);
+				alreadyTested.add(pair.getKey());
+				testAgainst.remove(pair.getKey());
 			}
 			result &= !blocksFound;
 		}

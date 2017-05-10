@@ -26,7 +26,7 @@ public class BooleanType extends BaseType<Boolean, Boolean> {
 		if (parameter != null) {
 			String p = parameter.toLowerCase();
 			if (p.equals(ZERO) || p.equals(ONE)) {
-				myResults.add(p.equals("1"));
+				myResults.add("1".equals(p));
 			} else if (p.equals(TRUE) || p.equals(FALSE)) {
 				myResults.add(p.equals(TRUE));
 			}
